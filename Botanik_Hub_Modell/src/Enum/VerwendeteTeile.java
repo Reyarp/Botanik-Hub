@@ -2,7 +2,10 @@ package Enum;
 
 public enum VerwendeteTeile {
 	BLUETE("Blüte"),
+	BLATT("Blatt"),
+	FRUCHT("Frucht"),
 	STIEL("Stiel"),
+	SAMEN("Samen"),
 	WURZEL("Wurzel");
 
 	private String beschreibung;

@@ -5,15 +5,13 @@ public class BotanikHub {
 
 	private Benutzer benutzer;
 	private Pflanze pflanze;
-	private String notiz;
 	
 	public BotanikHub() {}
 	
-	public BotanikHub(Benutzer benutzer, Pflanze pflanze, String notiz) {
+	public BotanikHub(Benutzer benutzer, Pflanze pflanze) {
 		super();
 		this.benutzer = benutzer;
 		this.pflanze = pflanze;
-		this.notiz = notiz;
 	}
 
 	public Benutzer getBenutzer() {
@@ -30,13 +28,5 @@ public class BotanikHub {
 
 	public void setPflanze(Pflanze pflanze) {
 		this.pflanze = pflanze;
-	}
-
-	public String getNotiz() {
-		return notiz;
-	}
-
-	public void setNotiz(String notiz) {
-		this.notiz = notiz;
 	}
 }

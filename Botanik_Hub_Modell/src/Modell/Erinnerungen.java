@@ -4,11 +4,14 @@ import java.time.LocalDate;
 
 import Enum.Erinnerungstyp;
 import Enum.Intervall;
+import jakarta.json.bind.annotation.JsonbDateFormat;
 
 public class Erinnerungen {
 
 	
+	@JsonbDateFormat("yyyy-MM-dd")
 	private LocalDate datum;
+	
 	private Erinnerungstyp typ;
 	private Intervall intervall;
 	private Benutzer benutzer;

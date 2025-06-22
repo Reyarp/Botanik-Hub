@@ -20,7 +20,7 @@ public enum BenutzerTyp {
 
 	/*
 	 *  Da Enums sehr case sensitive sind hab ich mit String Beschreibung gearbeitet und  
-	 *  eine Methode geschrieben die meine Beschreibung als Vergleich hernimmt für Prüfungen da z.B. März oder Gießen nicht funktioniert!
+	 *  eine Methode geschrieben die meine Beschreibung als Vergleich hernimmt für Prüfungen da z.B. März oder Gießen nicht in der Datenbank funktioniert!
 	 */
 	
 	// Methode für Enum rückwandlung -> sonst IllegalArgumentException

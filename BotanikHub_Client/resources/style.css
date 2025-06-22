@@ -1,0 +1,384 @@
+/* =============================================================
+ * LABELS – Begrüßung und Versionsinfos
+ * ============================================================= */
+.willkommen-label {
+    -fx-font-size: 40pt;
+    -fx-text-fill: white;
+}
+
+.version-label {
+    -fx-text-fill: white;
+    -fx-font-size: 12;
+}
+
+.info-label {
+    -fx-font-style: italic;
+    -fx-text-fill: gray;
+}
+
+/* =============================================================
+ * LABELS – innerhalb von Dialogen
+ * ============================================================= */
+.dialog-label,
+.dialog-label-info,
+.dialog-label-mouse {
+    -fx-border-color: lightgrey;
+    -fx-background-color: #f1f8e9;
+    -fx-font-style: italic;
+    -fx-text-fill: black;
+    -fx-alignment: center;
+}
+
+.dialog-label {
+    -fx-text-fill: grey;
+}
+
+.dialog-label-mouse {
+    -fx-cursor: arrow;
+}
+
+/* =============================================================
+ * BUTTONS – Startseite Login & Konto
+ * ============================================================= */
+.login-button {
+    -fx-background-color: linear-gradient(to bottom, #388e3c, #2e7d32);
+    -fx-text-fill: white;
+    -fx-font-size: 14pt;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 10 20 10 20;
+    -fx-effect: dropshadow(gaussian, rgba(46,125,50, 0.4), 10, 0.5, 0, 0);
+    -fx-cursor: hand;
+}
+
+.neues-konto-button {
+    -fx-background-color: linear-gradient(to bottom, #43A047, #2E7D32);
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-background-radius: 6;
+    -fx-padding: 10;
+    -fx-effect: dropshadow(gaussian, rgba(46,125,50, 0.4), 10, 0.5, 0, 0);
+    -fx-cursor: hand;
+}
+
+/* =============================================================
+ * BUTTONS – Allgemeine Dialogbuttons
+ * ============================================================= */
+.dialog-button-ok {
+    -fx-background-color: #659379;
+    -fx-font-size: 12px;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(46,125,50, 0.4), 10, 0.5, 0, 0);
+    -fx-cursor: hand;
+}
+
+.dialog-button-cancel,
+.dialog-button-image {
+    -fx-background-color: #84bc9c;
+    -fx-font-size: 11px;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(46,125,50, 0.4), 10, 0.5, 0, 0);
+    -fx-cursor: hand;
+}
+
+/* =============================================================
+ * BUTTONS – Benutzer-Dialogbuttons
+ * ============================================================= */
+.benutzer-dialog-button-ok {
+    -fx-background-color: #4D5C9E;
+    -fx-font-size: 12px;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(46,125,50, 0.4), 10, 0.5, 0, 0);
+    -fx-cursor: hand;
+}
+
+.benutzer-dialog-button-cancel {
+    -fx-background-color: #9EABE5;
+    -fx-font-size: 11px;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(46,125,50, 0.4), 10, 0.5, 0, 0);
+}
+
+.benutzer-dialog-layout {
+    -fx-background-color: linear-gradient(to bottom, #D3DFFF, #6E86C9);
+    -fx-border-width: 2;
+}
+
+/* =============================================================
+ * ALERT – Systemfenster OK/Abbruch
+ * ============================================================= */
+.alert-button-ok {
+    -fx-background-color: #659379;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(46,125,50, 0.4), 10, 0.5, 0, 0);
+}
+
+.alert-button-cancel {
+    -fx-background-color: #84bc9c;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(46,125,50, 0.4), 10, 0.5, 0, 0);
+}
+
+/* =============================================================
+ * DIALOGE – Grundlayouts
+ * ============================================================= */
+.dialog-layout {
+    -fx-background-color: linear-gradient(to bottom, #E8F5E9, #A5D6A7);
+    -fx-border-width: 2;
+}
+/* =============================================================
+ * DIALOGE – Bildvorschau
+ * ============================================================= */
+.image-vorschau {
+    -fx-background-color: white;
+    -fx-border-color: grey;
+    -fx-border-width: 1;
+}
+
+/* =============================================================
+ * KALENDER – Dialoge & Monatslabels
+ * ============================================================= */
+.kalender-dialog-layout {
+    -fx-background-color: linear-gradient(to bottom, #7BD799, #19532D);
+    -fx-border-width: 2;
+}
+
+.kalender-dialog-button-ok {
+    -fx-background-color: #29954D;
+    -fx-font-size: 12px;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(46,125,50, 0.4), 10, 0.5, 0, 0);
+    -fx-cursor: hand;
+}
+
+.kalender-dialog-button-cancel {
+    -fx-background-color: #7BD799;
+    -fx-font-size: 12px;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(46,125,50, 0.4), 10, 0.5, 0, 0);
+}
+
+.label-kalender {
+    -fx-background-color: white;
+    -fx-border-color: grey;
+}
+
+.label-kalender-monate {
+    -fx-alignment: center;
+    -fx-background-color: #19532D;
+    -fx-border-color: black;
+    -fx-text-fill: white;
+}
+
+/* =============================================================
+ * TABPANE – Tabs & Navigation
+ * ============================================================= */
+.tab-pane .tab-label {
+    -fx-background-color: #c5e1a5;
+    -fx-text-fill: #1b5e20;
+    -fx-pref-width: 80px;
+    -fx-pref-height: 40px;
+}
+
+.tab:selected .tab-label {
+    -fx-background-color: #81c784;
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+}
+
+.tab-pane .tab {
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.fehler-tab .tab-label {
+    -fx-pref-width: 30px;
+    -fx-pref-height: 40px;
+    -fx-padding: 0;
+}
+
+/* =============================================================
+ * TABLEVIEW – Tabellenanzeige & Verhalten
+ * ============================================================= */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: lightgrey;
+    -fx-border-radius: 2;
+    -fx-background-radius: 2;
+    -fx-table-cell-border-color: transparent;
+}
+
+.table-view .column-header-background {
+    -fx-border-color: lightgrey;
+}
+
+.table-view .column-header,
+.table-view .filler {
+    -fx-size: 25px;
+    -fx-alignment: CENTER;
+    -fx-font-size: 13px;
+    -fx-text-fill: black;
+}
+
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+}
+
+.table-row-cell:filled:hover {
+    -fx-background-color: #c5e1a5;
+}
+
+.table-row-cell:filled:selected,
+.table-row-cell:focused:selected {
+    -fx-background-color: #81c784;
+    -fx-text-fill: black;
+}
+
+.table-cell {
+    -fx-padding: 6 10 6 10;
+    -fx-font-size: 12px;
+    -fx-text-fill: black;
+    -fx-alignment: CENTER;
+}
+
+.table-view .scroll-bar:vertical,
+.table-view .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.table-view .scroll-bar .thumb {
+    -fx-background-color: #29954D;
+}
+
+/* =============================================================
+ * TABLEVIEW – Tabellenanzeige & Verhalten -> Benutzer
+ * ============================================================= */
+.benutzer-table-view {
+    -fx-background-color: white;
+    -fx-border-color: lightgrey;
+    -fx-border-radius: 2;
+    -fx-background-radius: 2;
+    -fx-table-cell-border-color: transparent;
+}
+
+.benutzer-table-view .column-header-background {
+    -fx-border-color: lightgrey;
+}
+
+.benutzer-table-view .column-header,
+.benutzer-table-view .filler {
+    -fx-size: 25px;
+    -fx-alignment: CENTER;
+    -fx-font-size: 13px;
+    -fx-text-fill: black;
+}
+
+.benutzer-table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+}
+
+.benutzer-table-row-cell:filled:hover {
+    -fx-background-color: #9EABE5;
+}
+
+.benutzer-table-row-cell:filled:selected,
+.benutzer-table-row-cell:focused:selected {
+    -fx-background-color: #4D5C9E;
+    -fx-text-fill: black;
+}
+
+.benutzer-table-cell {
+    -fx-padding: 6 10 6 10;
+    -fx-font-size: 12px;
+    -fx-text-fill: black;
+    -fx-alignment: CENTER;
+}
+
+.benutzer-table-view .scroll-bar:vertical,
+.benutzer-table-view .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: lightgrey;
+    -fx-background-radius: 4;
+}
+
+/* =============================================================
+ * TEXTAREA – Texteingabe mehrzeilig
+ * ============================================================= */
+.text-area {
+    -fx-background-color: #f1f8e9;
+}
+
+.text-area .content {
+    -fx-background-color: #f1f8e9;
+}
+
+.text-area .thumb {
+    -fx-background-color: #81c784;
+}
+
+.text-area .scroll-bar {
+    -fx-background-color: #29954D;
+}
+
+.text-area .scroll-bar:vertical,
+.text-area .scroll-bar:horizontal {
+    -fx-background-color: white;
+}
+
+/* =============================================================
+ * DATEPICKER – Datumsauswahl
+ * ============================================================= */
+.date-picker {
+    -fx-background-color: white;
+    fx-border-color: #659379;
+}
+
+/* =============================================================
+ * COMBOBOX – Dropdown-Auswahl
+ * ============================================================= */
+.combo-box {
+    -fx-background-color: #19532D;
+    -fx-background-radius: 2;
+    -fx-text-fill: white;
+}
+
+.combo-box:hover {
+    -fx-background-color: #955490;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: #19532D;
+}
+
+.combo-box .arrow {
+    -fx-background-color: white;
+}
+
+.combo-box .list-cell {
+    -fx-background-color: #19532D;
+    -fx-text-fill: white;
+}
+
+.combo-box .list-cell:hover {
+    -fx-background-color: #7BD799;
+    -fx-text-fill: black;
+}
+
+.combo-box .list-cell:selected {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+}
+
+/* =============================================================
+ * ICONS
+ * ============================================================= */
+.kalender-label {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+    -fx-padding: 0;
+}

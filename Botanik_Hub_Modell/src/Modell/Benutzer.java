@@ -1,8 +1,10 @@
 package Modell;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import Enum.BenutzerTyp;
+import jakarta.json.bind.annotation.JsonbDateFormat;
 
 public class Benutzer {
 
@@ -10,6 +12,8 @@ public class Benutzer {
 	private String passwort;
 	private int benutzerId;
 	private BenutzerTyp typ;
+	
+	@JsonbDateFormat("yyyy-MM-dd") // Sonst erkennt JSON das format nicht -> Exception
 	private LocalDate registriertSeit;
 
 	public Benutzer() {}
@@ -20,7 +24,7 @@ public class Benutzer {
 		this.passwort = passwort;
 		this.benutzerId = benutzerId;
 		this.typ = typ;
-		this.registriertSeit = LocalDate.now();	// Aktuelles Datum, später für die Tableview
+		this.registriertSeit = registriertSeit;
 	}
 
 	public String getBenutzerName() {
@@ -61,5 +65,22 @@ public class Benutzer {
 
 	public void setRegistriertSeit(LocalDate registriertSeit) {
 		this.registriertSeit = registriertSeit;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(benutzerId);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Benutzer other = (Benutzer) obj;
+		return benutzerId == other.benutzerId;
 	}
 }

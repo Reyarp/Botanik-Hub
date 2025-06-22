@@ -1,7 +1,6 @@
 package Enum;
 
 public enum Pflanzentyp {
-	NUTZPFLANZE("Nutzpflanze"),
 	ZIERPFLANZE("Zierpflanze"),
 	HEILPFLANZE("Heilpflanze"),
 	DUFTPFLANZE("Duftpflanze"),

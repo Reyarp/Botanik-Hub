@@ -12,13 +12,24 @@ import Enum.Vermehrungsarten;
 import Enum.Vertraeglichkeit;
 import Enum.VerwendeteTeile;
 import Enum.Wasserbedarf;
+import jakarta.json.bind.annotation.JsonbTransient;
 
 public class Pflanze {
 
 	private Benutzer benutzer;
 	private String pflanzenName;
 	private String botanikName;
+	
+	// Verwendet ich für die lokale Anzeige des bildes(Client)
 	private String bildPfad;
+	// Base64-String dient ausschließlich dem Datentransfer zum Server
+	// Wird nicht in der Datenbank gespeichert, sondern nur verwendet
+	// um das Bild im Server-Dateisystem (z. B. /server_bilder/) abzulegen
+	// Deshalb keine Übergabe im Konstruktor nötig
+	private String bildBase64;
+	// Für den Benutzer
+	private String userBase64;
+	
 	private int pflanzenID;
 	private boolean giftig;
 	private double wuchsbreite;
@@ -33,7 +44,9 @@ public class Pflanze {
 	private Lebensdauer lebensdauer;
 	
 	private ArrayList<Vermehrungsarten> vermehrung = new ArrayList<>();
+	@JsonbTransient	// Habe doppelreferenzierung deshalb transient -> sont steckt der server in einem Loop -> Exception
 	private ArrayList<Erinnerungen> erinnerung = new ArrayList<>();
+	
 	private ArrayList<Botanikkalender> kalender = new ArrayList<>();
 	private ArrayList<Month> monat = new ArrayList<>();
 	private ArrayList<VerwendeteTeile> verwendeteTeile = new ArrayList<>();
@@ -55,21 +68,22 @@ public class Pflanze {
 	}
 
 	// Datenbank Konstruktor
-	public Pflanze(String pflanzenName, String botanikName, String bildPfad, int pflanzenID,
-			boolean giftig, double wuchsbreite, double wuchshoehe, String notiz, Wasserbedarf wasserbedarf,
+	public Pflanze(String pflanzenName, String botanikName, String bildPfad, String bildBase64, String userBase64, int pflanzenID,
+			boolean giftig, double wuchsbreite, double wuchshoehe, Wasserbedarf wasserbedarf,
 			Lichtbedarf lichtbedarf, Intervall duengung, Vertraeglichkeit vertraeglichkeit, Standort standort,
 			Lebensdauer lebensdauer, ArrayList<Vermehrungsarten> vermehrung, ArrayList<Erinnerungen> erinnerung,
 			ArrayList<Botanikkalender> kalender, ArrayList<Month> monat, ArrayList<VerwendeteTeile> verwendeteTeile,
-			ArrayList<Pflanzentyp> pflanzenTyp, Benutzer benutzer) {
+			ArrayList<Pflanzentyp> pflanzenTyp, Benutzer benutzer, String notiz) {
 		super();
 		this.pflanzenName = pflanzenName;
 		this.botanikName = botanikName;
 		this.bildPfad = bildPfad;
+		this.bildBase64 = bildBase64;
+		this.userBase64 = userBase64;
 		this.pflanzenID = pflanzenID;
 		this.giftig = giftig;
 		this.wuchsbreite = wuchsbreite;
 		this.wuchshoehe = wuchshoehe;
-		this.notiz = notiz;
 		this.wasserbedarf = wasserbedarf;
 		this.lichtbedarf = lichtbedarf;
 		this.duengung = duengung;
@@ -83,6 +97,7 @@ public class Pflanze {
 		this.verwendeteTeile = verwendeteTeile;
 		this.pflanzenTyp = pflanzenTyp;
 		this.benutzer = benutzer;
+		this.notiz = notiz;
 	}
 
 	public Benutzer getBenutzer() {
@@ -147,14 +162,6 @@ public class Pflanze {
 
 	public void setWuchshoehe(double wuchshoehe) {
 		this.wuchshoehe = wuchshoehe;
-	}
-
-	public String getNotiz() {
-		return notiz;
-	}
-
-	public void setNotiz(String notiz) {
-		this.notiz = notiz;
 	}
 
 	public Wasserbedarf getWasserbedarf() {
@@ -251,6 +258,30 @@ public class Pflanze {
 
 	public void setPflanzenTyp(ArrayList<Pflanzentyp> pflanzenTyp) {
 		this.pflanzenTyp = pflanzenTyp;
+	}
+
+	public String getNotiz() {
+		return notiz;
+	}
+
+	public void setNotiz(String notiz) {
+		this.notiz = notiz;
+	}
+
+	public String getBildBase64() {
+		return bildBase64;
+	}
+
+	public void setBildBase64(String bildBase64) {
+		this.bildBase64 = bildBase64;
+	}
+	
+	public String getUserBase64() {
+		return userBase64;
+	}
+
+	public void setUserBase64(String userBase64) {
+		this.userBase64 = userBase64;
 	}
 
 	@Override
