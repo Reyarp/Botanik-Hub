@@ -21,7 +21,7 @@ import javafx.util.Duration;
 
 public class Login_Startseite {
 
-	public static void erstelleStartSeite(StackPane stack, Stage stage) {
+	public static void erstelleStartSeite(StackPane stack, Stage arg0) {
 
 		/*
 		 * Das ist der Hauptdialog wo man am Anfang reinkommt
@@ -37,9 +37,8 @@ public class Login_Startseite {
 		Button accountErstellen = new Button("Neues Konto erstellen");
 
 		// Hintergrund setzen & Image
-		Image lebensBaumImage = new Image(BotanikHub_Client.class.getResource("/Lebensbaum.png").toString());
-		ImageView lebensBaumLogo = new ImageView(lebensBaumImage);
-		Util_Help.hintergrundSetzen(stack);
+		ImageView lebensBaumLogo = new ImageView(new Image(BotanikHub_Client.class.getResource("/Login_Startseite_Lebensbaum_Logo.png").toString()));
+		Util_Help.hintergrundSetzenLogin(stack);
 		
 		// CSS Styling
 		version.getStyleClass().add("version-label");
@@ -69,13 +68,14 @@ public class Login_Startseite {
 		accountErstellen.setOnMouseEntered(e -> Util_Animations.zoomInAnimation(accountErstellen, 1.2, Duration.seconds(0.3)));
 		accountErstellen.setOnMouseExited(e -> Util_Animations.zoomOutAnimation(accountErstellen, Duration.seconds(0.5)));
 
+		
 		// Eventhandler: login & accountErstellen
 		login.setOnAction(e -> {
-			new Login_Dialog(stack, stage).showAndWait();
+			new Login_Dialog(stack, arg0).showAndWait();
 		});
 
 		accountErstellen.setOnAction(e -> {
-			Benutzer_Erstellen_Dialog dialog = new Benutzer_Erstellen_Dialog(new BenutzerFX(new Benutzer()), stack, stage);
+			Benutzer_Erstellen_Dialog dialog = new Benutzer_Erstellen_Dialog(new BenutzerFX(new Benutzer()), stack, arg0);
 			Optional<ButtonType> result = dialog.showAndWait();
 			if (result.isPresent() && result.get().getButtonData() == ButtonData.OK_DONE) {
 				Util_Help.alertWindow(AlertType.INFORMATION, "Info: Account erstellen", "Benutzer erfolgreich erstellt").showAndWait();
@@ -83,6 +83,7 @@ public class Login_Startseite {
 		});
 
 		// Zusammenbau & Dialogeinstellungen
+		arg0.getIcons().add(new Image(BotanikHub_Client.class.getResource("/Window_Icon_Lebensbaum.jpg").toString()));
 		stack.getChildren().addAll(lebensBaumLogo, willkommen, login, version, accountErstellen, oder);
 		stack.getStylesheets().add(BotanikHub_Client.class.getResource("/style.css").toString());
 	}

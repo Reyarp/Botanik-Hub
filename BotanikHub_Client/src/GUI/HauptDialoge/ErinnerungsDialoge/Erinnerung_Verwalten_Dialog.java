@@ -25,6 +25,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -51,13 +52,12 @@ public class Erinnerung_Verwalten_Dialog extends Dialog<ButtonType> {
 		// Buttons & Cp
 		Button abbrechen = new Button("Abbrechen");
 		Button neueErinnerung = new Button("Neue Erinnerung");
-		neueErinnerung.setDisable(true);
 		Button editErinnerung = new Button("Erinnerung bearbeiten");
 		editErinnerung.setDisable(true);
 		Button deleteErinnerung = new Button("Erinnerung löschen");
 		deleteErinnerung.setDisable(true);
 
-		ImageView headerBild = new ImageView(new Image(BotanikHub_Client.class.getResource("/erinnerungsdialog.jpg").toString()));
+		ImageView headerBild = new ImageView(new Image(BotanikHub_Client.class.getResource("/Erinnerungen_Verwalten_Headerbild.jpg").toString()));
 		headerBild.setSmooth(true);
 		headerBild.setCache(true);
 		headerBild.setFitHeight(120);
@@ -79,6 +79,7 @@ public class Erinnerung_Verwalten_Dialog extends Dialog<ButtonType> {
 		dateCol.setCellValueFactory(new PropertyValueFactory<>("datum"));
 		dateCol.setPrefWidth(170);
 		dateCol.setStyle("-fx-alignment:center");
+
 		// Eigene Formatierung für den Wochentag
 		dateCol.setCellFactory(column -> new javafx.scene.control.cell.TextFieldTableCell<ErinnerungenFX, LocalDate>() {
 			@Override
@@ -87,10 +88,10 @@ public class Erinnerung_Verwalten_Dialog extends Dialog<ButtonType> {
 				if (empty || item == null) {
 					setText(null);
 				} else {
-					// DateTimeFormatter mit dem format (Wochentag)
+					// DateTimeFormatter mit dem format (Wochentag == EEEE)
 					DateTimeFormatter format = DateTimeFormatter.ofPattern("EEEE", Locale.GERMAN);
 					String tag = item.format(format);
-					setText(tag); // z. B. montag
+					setText(tag); // z. B montag
 				}
 			}
 		});
@@ -112,34 +113,36 @@ public class Erinnerung_Verwalten_Dialog extends Dialog<ButtonType> {
 		// readMethode -> unten
 		readErinnerungen(benutzer);
 
+		// Changelistener: tvErinnerung
 		tvErinnerung.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<>() {
 
 			@Override
 			public void changed(ObservableValue<? extends ErinnerungenFX> arg0, ErinnerungenFX arg1,ErinnerungenFX arg2) {
 				if(arg2 != null) {
-					neueErinnerung.setDisable(false);
 					editErinnerung.setDisable(false);
 					deleteErinnerung.setDisable(false);
 				} else {
-					neueErinnerung.setDisable(true);
 					editErinnerung.setDisable(true);
 					deleteErinnerung.setDisable(true);
 				}
-				
 			}
 		});
-		
-		// Eventhandler: abbrechen, neu, edit & delete
+
+		/* Da ich keine ButtonTypes hier verwendet habe musste ich eine andere Lösung zum schliessen finden
+		 * über this.setResult kann ich dem Fenster sagen -> ButtonType.Cancel = Schliesse das fenster
+		 */
 		abbrechen.setOnAction(e -> this.setResult(ButtonType.CANCEL));
+		// Dieser befehl ist ähnlich wie oben nur für das 'x' beim Fenster
 		this.getDialogPane().getScene().getWindow().addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> {
 			this.setResult(ButtonType.CANCEL);
 		});
 
+		// Eventhandler:
 		neueErinnerung.setOnAction(e -> {
 			Erinnerung_Anlegen_Dialog dialog = new Erinnerung_Anlegen_Dialog(benutzer);
 			Optional<ButtonType> result = dialog.showAndWait();
 			if(result.isPresent() && result.get().getButtonData() == ButtonData.OK_DONE) {
-			readErinnerungen(benutzer);
+				readErinnerungen(benutzer);
 			}
 		});
 
@@ -168,6 +171,7 @@ public class Erinnerung_Verwalten_Dialog extends Dialog<ButtonType> {
 		AnchorPane anchor = new AnchorPane();
 		anchor.getChildren().addAll(deleteErinnerung, abbrechen, neueErinnerung, editErinnerung);
 
+		// Eigene Methode zum GUI Platzieren
 		Util_Help.anchorpane(neueErinnerung, 5.0, null, 5.0, null);
 		Util_Help.anchorpane(editErinnerung, 5.0, null, 130.0, null);
 		Util_Help.anchorpane(deleteErinnerung, 5.0, null, 285.0, null);
@@ -184,10 +188,14 @@ public class Erinnerung_Verwalten_Dialog extends Dialog<ButtonType> {
 		this.getDialogPane().setContent(gesamt);
 		this.getDialogPane().getStylesheets().add(BotanikHub_Client.class.getResource("/style.css").toString());
 		this.getDialogPane().getStyleClass().add("kalender-dialog-layout");
+		// Stage holen zum Icon setzen, da ich direkt im Dialog keins setzen kann
+		Stage arg1 = (Stage) this.getDialogPane().getScene().getWindow();
+		arg1.getIcons().add(new Image(BotanikHub_Client.class.getResource("/Window_Icon_Lebensbaum.jpg").toString()));
 	}
 
 	private void readErinnerungen(Benutzer benutzer) {
 		try {
+			// Readmethode für Erinnerungen
 			ArrayList<Erinnerungen> alErinnerung = Service_Erinnerung.getErinnerung(benutzer.getBenutzerId());
 			olErinnerung.clear();
 			for(Erinnerungen er : alErinnerung) {

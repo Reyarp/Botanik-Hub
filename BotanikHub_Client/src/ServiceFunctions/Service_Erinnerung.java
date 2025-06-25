@@ -15,83 +15,92 @@ import jakarta.ws.rs.core.Response.Status;
 
 public class Service_Erinnerung {
 
-	/* 
-	 * Erinnerung hinzufügen POST /erinnerung
-	 */
-	/*
-	 * Neue Pflanze anlegen über POST /pflanze
-	 */
-	public static void postErinnerung(Erinnerungen erinnerung) throws SQLException{
+	// Fügt eine neue Erinnerung hinzu (POST /erinnerung)
+	public static void postErinnerung(Erinnerungen erinnerung) throws SQLException {
+		// HTTP-Client erstellen
 		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target("http://localhost:4711/erinnerung");	 	// Ziel-URL: http://localhost:4711/benutzer
+		// Ziel-URL für POST-Anfrage
+		WebTarget target = client.target("http://localhost:4711/erinnerung");
 
-		Response response = target												 // Sende POST-Request: Benutzer als JSON, akzeptiere Text als Antwort
-				.request(MediaType.TEXT_PLAIN)                        			 // Erwartet eine Textantwort
-				.post(Entity.entity(erinnerung, MediaType.APPLICATION_JSON));		 // Sendet JSON-Daten
+		// Sende POST-Anfrage mit Erinnerung als JSON, akzeptiere Text-Antwort
+		Response response = target
+				.request(MediaType.TEXT_PLAIN)
+				.post(Entity.entity(erinnerung, MediaType.APPLICATION_JSON));
 
-		if (response.getStatus() == Status.CREATED.getStatusCode()) {			 // Wenn der Server keinen 201 CREATED zurückgibt -> Fehler
+		// Erfolg: 201 CREATED
+		if (response.getStatus() == Status.CREATED.getStatusCode()) {
 			client.close();
 		} else {
-			String e = response.readEntity(String.class);						 // Lese den Fehlertext aus der Serverantwort
+			// Fehlertext lesen und weiterwerfen
+			String e = response.readEntity(String.class);
 			client.close();
-			throw new SQLException(e);											 // Wirf SQL-Fehler mit dem Servertext
+			throw new SQLException(e);
 		}
 	}
-	
-	/*
-	 * Pflaze bearbeiten über PUT /pflanze
-	 */
+
+	// Aktualisiert eine vorhandene Erinnerung (PUT /erinnerung/{id})
 	public static void putErinnerung(Erinnerungen erinnerung) throws SQLException {
+		// HTTP-Client erstellen
 		Client client = ClientBuilder.newClient();
+		// Ziel-URL mit ID der Erinnerung
 		WebTarget target = client.target("http://localhost:4711/erinnerung/" + erinnerung.getErinnerungID());
 
+		// Sende PUT-Anfrage mit aktualisierter Erinnerung
 		Response response = target
 				.request(MediaType.APPLICATION_JSON)
 				.put(Entity.entity(erinnerung, MediaType.APPLICATION_JSON));
 
+		// Erfolg: 200 OK
 		if (response.getStatus() == Status.OK.getStatusCode()) {
 			client.close();
 		} else {
+			// Fehlertext lesen und weiterwerfen
 			String e = response.readEntity(String.class);
 			client.close();
 			throw new SQLException(e);
 		}
 	}
-	
-	/*
-	 * Pflanze löschen über DELETE /pflanze
-	 */
-	public static void deleteErinnerung(int id) throws SQLException{
+
+	// Löscht eine Erinnerung (DELETE /erinnerung/{id})
+	public static void deleteErinnerung(int id) throws SQLException {
+		// HTTP-Client erstellen
 		Client client = ClientBuilder.newClient();
+		// Ziel-URL mit ID der zu löschenden Erinnerung
 		WebTarget target = client.target("http://localhost:4711/erinnerung/" + id);
-		
+
+		// Sende DELETE-Anfrage
 		Response response = target
 				.request(MediaType.APPLICATION_JSON)
 				.delete();
-		
-		if(response.getStatus() == Status.NO_CONTENT.getStatusCode()) {
+
+		// Erfolg: 204 NO_CONTENT
+		if (response.getStatus() == Status.NO_CONTENT.getStatusCode()) {
 			client.close();
 		} else {
+			// Fehlertext lesen und weiterwerfen
 			String e = response.readEntity(String.class);
 			client.close();
 			throw new SQLException(e);
 		}
 	}
-	
-	/*
-	 * Pflanze lesen über GET /pflanze
-	 */
-	public static ArrayList<Erinnerungen> getErinnerung(int id) throws SQLException{
+
+	// Holt alle Erinnerungen für eine Pflanze (GET /erinnerung/{id})
+	public static ArrayList<Erinnerungen> getErinnerung(int id) throws SQLException {
+		// HTTP-Client erstellen
 		Client client = ClientBuilder.newClient();
+		// Ziel-URL mit Pflanzen-ID
 		WebTarget target = client.target("http://localhost:4711/erinnerung/" + id);
-		
+
+		// Sende GET-Anfrage
 		Response response = target.request(MediaType.APPLICATION_JSON).get();
-		
-		if(response.getStatus() == Status.OK.getStatusCode()) {
+
+		// Erfolg: 200 OK -> Liste einlesen
+		if (response.getStatus() == Status.OK.getStatusCode()) {
 			ArrayList<Erinnerungen> alP = response.readEntity(new GenericType<ArrayList<Erinnerungen>>() {});
 			client.close();
 			return alP;
 		} else {
+			// Fehlertext lesen und weiterwerfen
 			String e = response.readEntity(String.class);
 			client.close();
 			throw new SQLException(e);

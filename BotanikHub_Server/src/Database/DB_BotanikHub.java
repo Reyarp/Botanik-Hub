@@ -27,7 +27,7 @@ public class DB_BotanikHub {
 					DB_Util.PFLANZE_ID + " INTEGER," +
 					DB_Util.BENUTZER_ID + " INTEGER," +
 					DB_Util.BOTANIK_HUB_PFLANZE_NOTIZ + " VARCHAR(1000)," +
-					DB_Util.BOTANIK_HUB_BASE64 + " CLOB," +
+					DB_Util.BOTANIK_HUB_IS_ADMIN_PFLANZE + " BOOLEAN DEFAULT FALSE," +
 					"PRIMARY KEY(" + DB_Util.PFLANZE_ID + "," + DB_Util.BENUTZER_ID + ")," +
 					"FOREIGN KEY(" + DB_Util.PFLANZE_ID + ") REFERENCES " + DB_Util.PFLANZE_TABLE + "(" + DB_Util.PFLANZE_ID + ")," +
 					"FOREIGN KEY(" + DB_Util.BENUTZER_ID + ") REFERENCES " + DB_Util.BENUTZER_TABLE + "(" + DB_Util.BENUTZER_ID + "))";
@@ -52,7 +52,7 @@ public class DB_BotanikHub {
 		String insert = "INSERT INTO " + DB_Util.BOTANIK_HUB_TABLE + " (" +
 				DB_Util.PFLANZE_ID + "," +
 				DB_Util.BENUTZER_ID + "," +
-				DB_Util.BOTANIK_HUB_BASE64 + "," +
+				DB_Util.BOTANIK_HUB_IS_ADMIN_PFLANZE + "," +
 				DB_Util.BOTANIK_HUB_PFLANZE_NOTIZ + ") VALUES (?, ?, ?, ?)";
 
 
@@ -61,7 +61,7 @@ public class DB_BotanikHub {
 			stmt = conn.prepareStatement(insert);
 			stmt.setInt(1, hub.getPflanze().getPflanzenID());
 			stmt.setInt(2, hub.getBenutzer().getBenutzerId());
-			stmt.setString(3, hub.getPflanze().getUserBase64());
+			stmt.setBoolean(3, hub.getPflanze().isAdminPflanze());
 			stmt.setString(4, hub.getPflanze().getNotiz());
 
 			stmt.executeUpdate();
@@ -126,40 +126,6 @@ public class DB_BotanikHub {
 		}
 	}
 
-	public static void updateUserBase64(BotanikHub hub) throws SQLException{
-		Connection conn = null;
-		PreparedStatement stmt = null;
-
-		String update = "UPDATE " + DB_Util.BOTANIK_HUB_TABLE + " SET " +
-				DB_Util.BOTANIK_HUB_BASE64 + "=?" +
-				" WHERE " + DB_Util.PFLANZE_ID + "=? AND " + DB_Util.BENUTZER_ID + "=?";
-
-		try {
-			conn = DriverManager.getConnection(DB_Util.CONNECTION_STRING);
-			stmt = conn.prepareStatement(update);
-			stmt.setString(1, hub.getPflanze().getUserBase64());
-			stmt.setInt(2, hub.getPflanze().getPflanzenID());
-			stmt.setInt(3, hub.getBenutzer().getBenutzerId());
-
-
-			/*
-			 * 
-			 * 
-			 */
-			System.out.println("Botanik-Hub Pflanze wird geupdatet - Base64 vorhanden? " + (hub.getPflanze().getBildBase64() != null));
-			System.out.println("Base64 Länge: " + (hub.getPflanze().getBildBase64() != null ? hub.getPflanze().getBildBase64().length() : "null"));
-
-
-			stmt.executeUpdate();
-			
-		} catch(SQLException e) {
-			throw e;
-		} finally {
-			if (stmt != null) stmt.close();
-			if (conn != null) conn.close();
-		}
-	}
-
 	public static ArrayList<Pflanze> readBotanikHubPflanzen(int benutzerID) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -178,7 +144,8 @@ public class DB_BotanikHub {
 						DB_Util.BENUTZER_TABLE + "." + DB_Util.BENUTZER_NAME + "," +
 						DB_Util.BENUTZER_TABLE + "." + DB_Util.BENUTZER_BENUTZERROLLE + "," +
 						DB_Util.BOTANIK_HUB_TABLE + "." + DB_Util.BOTANIK_HUB_PFLANZE_NOTIZ + "," +
-						DB_Util.BOTANIK_HUB_TABLE + "." + DB_Util.BOTANIK_HUB_BASE64 + "," +
+						DB_Util.PFLANZE_TABLE + "." + DB_Util.PFLANZE_BASE64 + "," +
+						DB_Util.BOTANIK_HUB_TABLE + "." + DB_Util.BOTANIK_HUB_IS_ADMIN_PFLANZE + "," +
 						DB_Util.PFLANZE_TABLE + ".*," +
 						DB_Util.PFLANZE_VERMEHRUNG_TABLE + ".*," +
 						DB_Util.PFLANZE_PFLANZENTYP_TABLE + ".*," +
@@ -227,6 +194,7 @@ public class DB_BotanikHub {
 			while (rs.next()) {
 				// Pflanze ID holen zum Vergleichen -> letzeID != pflanzeID
 				int pflanzenId = rs.getInt(DB_Util.PFLANZE_ID);
+
 				// Benutzer ersteller
 				Benutzer benutzer = new Benutzer();
 				benutzer.setBenutzerId(rs.getInt(DB_Util.BENUTZER_ID));
@@ -257,7 +225,6 @@ public class DB_BotanikHub {
 							rs.getString(DB_Util.PFLANZE_BOTAN_NAME),
 							rs.getString(DB_Util.PFLANZE_BILDPFAD),
 							rs.getString(DB_Util.PFLANZE_BASE64),
-							rs.getString(DB_Util.BOTANIK_HUB_BASE64),
 							pflanzenId,
 							rs.getBoolean(DB_Util.PFLANZE_IS_GIFTIG),
 							rs.getDouble(DB_Util.PFLANZE_WUCHSBREITE),
@@ -271,7 +238,8 @@ public class DB_BotanikHub {
 							new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
 							new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
 							benutzer,
-							rs.getString(DB_Util.BOTANIK_HUB_PFLANZE_NOTIZ)
+							rs.getString(DB_Util.BOTANIK_HUB_PFLANZE_NOTIZ),
+							rs.getBoolean(DB_Util.BOTANIK_HUB_IS_ADMIN_PFLANZE)
 							);
 
 

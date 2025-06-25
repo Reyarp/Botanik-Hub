@@ -36,6 +36,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
 
@@ -58,8 +59,9 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 
 	/* Pflege */
 	private ArrayList<Month> alRueckschnitt;
-	private RadioButton wasser1, wasser2, wasser3, licht1, licht2, licht3, dueng1, dueng2, dueng3;
+	private RadioButton wasser1, wasser2, wasser3, licht1, licht2, licht3, dueng1, dueng2, dueng3, dueng4;
 	private TextArea standortLbl;
+	private Button standort;
 
 	/* Kalender */
 	private BotanikkalenderFX aussaatKalender = new BotanikkalenderFX(new Botanikkalender(Kalendertyp.AUSSAAT));
@@ -234,6 +236,7 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 					if (dueng1.isSelected()) p.getAppPflanze().setDuengung(Intervall.WOECHENTLICH);
 					else if (dueng2.isSelected()) p.getAppPflanze().setDuengung(Intervall.MONATLICH);
 					else if (dueng3.isSelected()) p.getAppPflanze().setDuengung(Intervall.JAEHRLICH);
+					else if(dueng4.isSelected()) p.getAppPflanze().setDuengung(Intervall.NICHT_NOETIG);
 
 					/*
 					 * ---------------Kalender---------------
@@ -293,7 +296,6 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 							if(benutzer.getTyp() == BenutzerTyp.BENUTZER) {
 								BotanikHub hub = new BotanikHub(benutzer, p.getAppPflanze());
 								Service_BotanikHub.putNotiz(hub);
-								Service_BotanikHub.putUserBase64(hub);
 							}
 
 							// Bei neuer Pflanze -> Insert
@@ -326,7 +328,8 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 							Service_Erinnerung.postErinnerung(erinnerung.getAppErinnerung());
 						}
 					} catch (SQLException ex) {
-						Util_Help.alertWindow(AlertType.ERROR, "Fehler: Pflanze anlegen", ex.getMessage()).showAndWait();
+						Util_Help.alertWindow(AlertType.ERROR, "Fehler: Pflanze anlegen", ex.toString()).showAndWait();
+						ex.printStackTrace();
 					}
 					return null;
 				}
@@ -358,7 +361,7 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 				e.consume();
 			}
 
-			
+
 			if (breite <= 0 || breiteTxt.getText().equals(".")) {
 				Util_Animations.pauseAnimation(breiteTxt, Duration.seconds(10));
 				fehlerText.add("- Breite fehlt oder ungültig (Eigenschaften)");
@@ -370,7 +373,7 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 				fehlerText.add("- Pflanzentyp fehlt (Eigenschaften)");
 				e.consume();
 			}
-			
+
 			if (p.getAppPflanze().getStandort() == null) {
 				Util_Animations.pauseAnimation(standortLbl, Duration.seconds(10));
 				fehlerText.add("- Standort nicht gewählt (Pflege)");
@@ -385,7 +388,7 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 						// Prüfung mit anymatch auf graphic(instanceof ImageView)
 						.anyMatch(t -> t.getGraphic() instanceof ImageView 
 								// Zusätzlich noch auf die URL
-								&& ((ImageView) t.getGraphic()).getImage().getUrl().contains("fehler.png"));
+								&& ((ImageView) t.getGraphic()).getImage().getUrl().contains("Pflanze_Anlegen_Fehlertab.png"));
 
 				if (!existiert) {
 					// Wenn es nicht existiert -> zur TabPane hinzufügen
@@ -393,15 +396,15 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 					// Automatisch zu Fehlertab springen -> coole Funktion
 					tab.getSelectionModel().select(fehlerTab);
 				}
-				
+
 				// Funktion um bei erneuten Fehlerauftritten der Tab neu geladen wird
 				tab.getTabs().removeIf(t -> t.getGraphic() instanceof ImageView &&
-					    ((ImageView) t.getGraphic()).getImage().getUrl().contains("fehler.png"));
-					tab.getTabs().add(fehlerTab);
-					tab.getSelectionModel().select(fehlerTab);
+						((ImageView) t.getGraphic()).getImage().getUrl().contains("Pflanze_Anlegen_Fehlertab.png"));
+				tab.getTabs().add(fehlerTab);
+				tab.getSelectionModel().select(fehlerTab);
 			}
-			
-			
+
+
 			try {
 				// Duplikate prüfen bei neuer Pflanze
 				if(p.getAppPflanze().getPflanzenID() == 0) {
@@ -421,14 +424,14 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 						return;
 					}
 				}
-				
+
 				if (benutzer.getTyp() == BenutzerTyp.BENUTZER) {
 					List<Pflanze> userPflanzen = Service_BotanikHub.getBHPflanzen(benutzer.getBenutzerId());
 					List<Pflanze> duplikateImHub = userPflanzen.stream()
-						.filter(pf -> pf.getPflanzenName().equalsIgnoreCase(nameTxt.getText()))
-						// gleiche ID auslassen beim Bearbeiten
-						.filter(pf -> pf.getPflanzenID() != p.getAppPflanze().getPflanzenID())
-						.toList();
+							.filter(pf -> pf.getPflanzenName().equalsIgnoreCase(nameTxt.getText()))
+							// gleiche ID auslassen beim Bearbeiten
+							.filter(pf -> pf.getPflanzenID() != p.getAppPflanze().getPflanzenID())
+							.toList();
 
 					if (!duplikateImHub.isEmpty()) {
 						this.setResult(null);
@@ -466,6 +469,9 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 		this.getDialogPane().setPrefSize(580, 450);
 		this.getDialogPane().getStylesheets().add(BotanikHub_Client.class.getResource("/style.css").toString());
 		this.getDialogPane().getStyleClass().add("dialog-layout");
+		// Stage holen zum Icon setzen, da ich direkt im Dialog keins setzen kann
+		Stage arg1 = (Stage) this.getDialogPane().getScene().getWindow();
+		arg1.getIcons().add(new Image(BotanikHub_Client.class.getResource("/Window_Icon_Lebensbaum.jpg").toString()));
 	}
 
 	public Tab allgemein(PflanzeFX p, Benutzer b) {
@@ -493,7 +499,7 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 		Label uploadLbl = new Label("Bild hochladen");
 
 		// Löschen Icon
-		ImageView loeschIcon = new ImageView(new Image(BotanikHub_Client.class.getResource("/bin.png").toString()));
+		ImageView loeschIcon = new ImageView(new Image(BotanikHub_Client.class.getResource("/Pflanze_Anlegen_Allgemein_Löschen.png").toString()));
 		loeschIcon.setFitWidth(65);
 		loeschIcon.setFitHeight(60);
 		loeschIcon.setOpacity(0.4);
@@ -510,23 +516,15 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 
 		// Nur wenn Base64 gesetzt ist, dann anzeigen
 		String base64 = p.getAppPflanze().getBildBase64();
-		String userBase64 = p.getAppPflanze().getUserBase64();
 
-		if ((base64 != null && !base64.isBlank()) || (userBase64 != null && !userBase64.isBlank())) {
-			try {
-				if(b.getTyp() == BenutzerTyp.ADMIN) {
-					byte[] imageBytes = Base64.getDecoder().decode(base64);
-					Image base64Image = new Image(new ByteArrayInputStream(imageBytes));
-					pflanzenBild.setImage(base64Image);
-				} else if(b.getTyp() == BenutzerTyp.BENUTZER) {
-					byte[] imageBytes = Base64.getDecoder().decode(userBase64);
-					Image userBase64Image = new Image(new ByteArrayInputStream(imageBytes));
-					pflanzenBild.setImage(userBase64Image);
-				}
-
-			} catch (IllegalArgumentException ex) {
-				Util_Help.alertWindow(AlertType.ERROR, "Fehler: Bild Base64", ex.getMessage());
-			}
+		if (b.getTyp() == BenutzerTyp.ADMIN && base64 != null && !base64.isBlank()) {
+			byte[] imageBytes = Base64.getDecoder().decode(base64);
+			Image base64Image = new Image(new ByteArrayInputStream(imageBytes));
+			pflanzenBild.setImage(base64Image);
+		} else if (b.getTyp() == BenutzerTyp.BENUTZER && base64 != null && !base64.isBlank()) {
+			byte[] imageBytes = Base64.getDecoder().decode(base64);
+			Image base64Image = new Image(new ByteArrayInputStream(imageBytes));
+			pflanzenBild.setImage(base64Image);
 		}
 
 		// Layout: StackPane -> für die ImageView
@@ -588,7 +586,7 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 					if(b.getTyp() == BenutzerTyp.ADMIN) {
 						p.getAppPflanze().setBildBase64(bildbase64);
 					} else if(b.getTyp() == BenutzerTyp.BENUTZER) {
-						p.getAppPflanze().setUserBase64(bildbase64);
+						p.getAppPflanze().setBildBase64(bildbase64);
 					}
 				} catch (IOException e1) {
 					Util_Help.alertWindow(AlertType.ERROR, "Fehler: Bildupload", e1.getMessage());
@@ -604,7 +602,7 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 				p.getAppPflanze().setBildBase64(null);
 				p.getAppPflanze().setBildPfad(null);
 			} else if(b.getTyp() == BenutzerTyp.BENUTZER) {
-				p.getAppPflanze().setUserBase64(null);
+				p.getAppPflanze().setBildBase64(null);
 				p.getAppPflanze().setBildPfad(null);
 			}
 
@@ -775,7 +773,7 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 
 		// Eventhandler: Pflanzentyp
 		pflanzTyp.setOnAction(e -> {
-			Pflanze_PflanzenTyp_Dialog dialog = new Pflanze_PflanzenTyp_Dialog(p);
+			PflanzenTyp_Dialog dialog = new PflanzenTyp_Dialog(p);
 			Optional<ButtonType> o = dialog.showAndWait();
 
 			if (o.isPresent() && o.get().getButtonData() == ButtonData.OK_DONE) {
@@ -843,7 +841,7 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 		}
 
 		// Standort
-		Button standort = new Button("Standort");
+		standort = new Button("Standort wählen");
 		standortLbl = new TextArea((p.getAppPflanze().getStandort() != null)
 				? p.getAppPflanze().getStandort().getBeschreibung()
 						: "Noch kein Standort gewählt");
@@ -871,9 +869,11 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 		dueng1 = new RadioButton("Wöchentlich");
 		dueng2 = new RadioButton("Monatlich");
 		dueng3 = new RadioButton("Jährlich");
+		dueng4 = new RadioButton("Nicht nötig");
 		dueng1.setToggleGroup(duengung);
 		dueng2.setToggleGroup(duengung);
 		dueng3.setToggleGroup(duengung);
+		dueng4.setToggleGroup(duengung);
 
 		// Vorauswahl setzen -> Bei bearbeiten der Pflanze
 		if (p.getAppPflanze().getDuengung() != null) {
@@ -881,6 +881,7 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 			case WOECHENTLICH -> dueng1.setSelected(true);
 			case MONATLICH -> dueng2.setSelected(true);
 			case JAEHRLICH -> dueng3.setSelected(true);
+			case NICHT_NOETIG -> dueng4.setSelected(true);
 			}
 		}
 
@@ -900,6 +901,7 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 		grid.add(dueng1, 1, 0);
 		grid.add(dueng2, 2, 0);
 		grid.add(dueng3, 3, 0);
+		grid.add(dueng4, 4, 0);
 
 		grid.add(new Label("Wasserbedarf:"), 0, 1);
 		grid.add(wasser1, 1, 1);
@@ -921,7 +923,7 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 
 		// Eventhandler: standort, rückschnitt
 		standort.setOnAction(e -> {
-			Pflanze_Standort_Dialog dialog = new Pflanze_Standort_Dialog(p);
+			Standort_Dialog dialog = new Standort_Dialog(p);
 			Optional<ButtonType> result = dialog.showAndWait();
 			if (result.isPresent() && result.get().getButtonData() == ButtonData.OK_DONE) {
 				if (p.getAppPflanze().getStandort() != null) {
@@ -1040,6 +1042,8 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 							.map(Month::getBeschreibung)
 							.collect(Collectors.joining(", "));
 					ausLbl.setText(text);
+				} else {
+					ausLbl.setText("Noch keine Aussaatzeit ausgewählt");
 				}
 			}
 		});
@@ -1054,6 +1058,8 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 							.map(Month::getBeschreibung)
 							.collect(Collectors.joining(", "));
 					blueteLbl.setText(text);
+				} else {
+					ausLbl.setText("Noch keine Blütezeit ausgewählt");
 				}
 			}
 		});
@@ -1068,6 +1074,8 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 							.map(Month::getBeschreibung)
 							.collect(Collectors.joining(", "));
 					ernteLbl.setText(text);
+				} else {
+					ausLbl.setText("Noch keine Erntezeit ausgewählt");
 				}
 			}
 		});
@@ -1125,7 +1133,7 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 
 		// Evenhandler: methoden
 		methoden.setOnAction(e -> {
-			Pflanze_Vermehrungsmethoden_Dialog dialog = new Pflanze_Vermehrungsmethoden_Dialog(p);
+			Vermehrungsmethoden_Dialog dialog = new Vermehrungsmethoden_Dialog(p);
 			Optional<ButtonType> o = dialog.showAndWait();
 
 			if (o.isPresent() && o.get().getButtonData() == ButtonData.OK_DONE) {
@@ -1225,7 +1233,7 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 		});
 
 		intervall.setOnAction(e -> {
-			Pflanze_Intervall_Dialog dialog = new Pflanze_Intervall_Dialog(erinnerung);
+			Intervall_Dialog dialog = new Intervall_Dialog(erinnerung);
 			Optional<ButtonType> o = dialog.showAndWait();
 			if (o.isPresent() && o.get().getButtonData() == ButtonData.OK_DONE) {
 				if (erinnerung.getAppErinnerung().getIntervall() != null) {
@@ -1253,7 +1261,7 @@ public class Pflanze_Anlegen_Dialog extends Dialog<ButtonType> {
 		fehlerLbl.setEditable(false);
 		fehlerLbl.setPrefSize(300, 400);
 
-		ImageView fehlerIcon = new ImageView((BotanikHub_Client.class.getResource("/fehler.png").toString()));
+		ImageView fehlerIcon = new ImageView((BotanikHub_Client.class.getResource("/Pflanze_Anlegen_Fehlertab.png").toString()));
 		fehlerIcon.setFitHeight(35);
 		fehlerIcon.setFitWidth(25);
 		fehlerIcon.setPreserveRatio(true);

@@ -29,6 +29,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 public class Botanikkalender_Dialog extends Dialog<ButtonType> {
 
@@ -36,7 +37,7 @@ public class Botanikkalender_Dialog extends Dialog<ButtonType> {
 	 * Dieser Dialog ist für Admin und Benutzer
 	 * Hier kann man eine Pflanze auswählen die einem die Aussaat,-Blüte und Erntemonate anzeigt
 	 */
-	
+
 	// GridPanes für die Kalenderansicht
 	private GridPane infoGrid = new GridPane();
 	private GridPane aussaatGrid = new GridPane();
@@ -57,23 +58,23 @@ public class Botanikkalender_Dialog extends Dialog<ButtonType> {
 		ComboBox<PflanzeFX> cbPflanze = new ComboBox<>(ol);
 		cbPflanze.setPrefSize(111, 20);
 		cbPflanze.setPromptText("Bitte Pflanze wählen");
-		
 
-		ImageView headerBild = new ImageView(new Image(BotanikHub_Client.class.getResource("/Botanik.jpg").toString()));
+
+		ImageView headerBild = new ImageView(new Image(BotanikHub_Client.class.getResource("/Botanikkalender_Headerbild.jpg").toString()));
 		headerBild.setFitWidth(1095);
 		headerBild.setFitHeight(110);
 		headerBild.setCache(true);
 		headerBild.setSmooth(true);
 
-		ImageView aussaatImage = new ImageView(new Image(BotanikHub_Client.class.getResource("/kalendersamen.png").toString()));
+		ImageView aussaatImage = new ImageView(new Image(BotanikHub_Client.class.getResource("/Botanikkalender_Aussaat_Label.png").toString()));
 		aussaatImage.setFitWidth(60);
 		aussaatImage.setFitHeight(60);
 
-		ImageView blueteImage = new ImageView(new Image(BotanikHub_Client.class.getResource("/kalenderbluete.png").toString()));
+		ImageView blueteImage = new ImageView(new Image(BotanikHub_Client.class.getResource("/Botanikkalender_Bluete_Label.png").toString()));
 		blueteImage.setFitWidth(60);
 		blueteImage.setFitHeight(60);
 
-		ImageView ernteImage = new ImageView(new Image(BotanikHub_Client.class.getResource("/kalenderernte.png").toString()));
+		ImageView ernteImage = new ImageView(new Image(BotanikHub_Client.class.getResource("/Botanikkalender_Ernte_Label.png").toString()));
 		ernteImage.setFitWidth(60);
 		ernteImage.setFitHeight(60);
 
@@ -92,13 +93,15 @@ public class Botanikkalender_Dialog extends Dialog<ButtonType> {
 		abbrechen.getStyleClass().add("kalender-dialog-button-cancel");
 		cbPflanze.getStyleClass().add("combo-box");
 
-		
-		 // Kalender-Layout mit Monatslabels befüllen
+
+		// Kalender-Layout mit Monatslabels befüllen
 		for (int i = 0; i < monate.length; i++) {
+			// Ein leeres Label für links oben sonst rückt alles nicht an die richtige Stelle
 			Label leerLbl = new Label();
 			leerLbl.setPrefSize(84, 20);
 			infoGrid.add(leerLbl, 0, 0);
 
+			// Labels mit den Monatsnamen
 			Label infoLbl = new Label(monate[i].getBeschreibung());
 			infoLbl.setPrefSize(84, 20);
 			infoLbl.getStyleClass().add("label-kalender-monate");
@@ -127,8 +130,11 @@ public class Botanikkalender_Dialog extends Dialog<ButtonType> {
 
 		// readMethode -> unten
 		readPflanzen();
+
+		// Nur aktivieren wenn auch Pflanzen vorhanden sind
 		cbPflanze.setDisable(ol.isEmpty());
-		// Changelistener: cbPflanze -> hole die Pflanzeninformation aus arg2 über readKalender methode
+
+		// Changelistener: cbPflanze -> die Pflanzeninformation aus arg2 holen für die readKalender methode
 		cbPflanze.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<>() {
 			@Override
 			public void changed(ObservableValue<? extends PflanzeFX> arg0, PflanzeFX arg1, PflanzeFX arg2) {
@@ -153,19 +159,24 @@ public class Botanikkalender_Dialog extends Dialog<ButtonType> {
 		this.getDialogPane().setContent(vb);
 		this.getDialogPane().getStylesheets().add(BotanikHub_Client.class.getResource("/style.css").toString());
 		this.getDialogPane().getStyleClass().add("kalender-dialog-layout");
+		// Stage holen zum Icon setzen, da ich direkt im Dialog keins setzen kann
+		Stage arg1 = (Stage) this.getDialogPane().getScene().getWindow();
+		arg1.getIcons().add(new Image(BotanikHub_Client.class.getResource("/Window_Icon_Lebensbaum.jpg").toString()));
 	}
 
 	private void readKalender(int id) {
 		try {
+			// Readmethode für die Kalenderansicht
 			ArrayList<Botanikkalender> alB = Service_Botaikkalender.getBotanikkalender(id);
 			updateKalender1(alB);
 		} catch (SQLException e) {
 			Util_Help.alertWindow(AlertType.ERROR, "Fehler", e.getMessage());
 		}
 	}
-	
+
 	private void readPflanzen() {
 		try {
+			// Readmethod für Pflanzen
 			Benutzer benutzer = BotanikHub_Client.getBenutzer();
 			ArrayList<Pflanze> alPflanze = new ArrayList<>();
 			if(benutzer.getTyp() == BenutzerTyp.ADMIN) {
@@ -181,11 +192,10 @@ public class Botanikkalender_Dialog extends Dialog<ButtonType> {
 			Util_Help.alertWindow(AlertType.ERROR, "Fehler", e.getMessage());
 		}
 	}
-	
-	/*
-	 * Setzt alle markierten Monatszellen eines bestimmten Kalenderrasters
-	 * (z. B. Aussaat, Blüte, Ernte) wieder zurück auf weißen Hintergrund.
-	 */
+
+
+	// Setzt alle markierten Monatszellen eines bestimmten Kalenderrasters
+	// (z. B. Aussaat, Blüte, Ernte) wieder zurück auf weißen Hintergrund.
 	private void resetGrid(GridPane grid) {
 		for (Node node : grid.getChildren()) {
 			Integer spalte = GridPane.getColumnIndex(node);
@@ -202,13 +212,14 @@ public class Botanikkalender_Dialog extends Dialog<ButtonType> {
 		resetGrid(ernteGrid);
 	}
 
-	/*
-	 * Markiert einen bestimmten Monat im übergebenen Kalender-Grid farbig,
-	 * abhängig vom Kalendertyp (Grün, Rosa oder Gelb).
-	 */
+
+	// Markiert einen bestimmten Monat im übergebenen Kalender-Grid farbig,
+	// abhängig vom Kalendertyp (Grün, Rosa oder Gelb).
 	private void labelMarkieren(GridPane grid, int monat) {
 		for (Node node : grid.getChildren()) {
+			// Spaltenindex holen mit getColumnIndex(node)
 			Integer spalte = GridPane.getColumnIndex(node);
+			// spalte == monat +1 (da 0 die bild labels sind)
 			if (node instanceof Label && spalte != null && spalte == monat + 1) {
 				Label lbl = (Label) node;
 				if (grid.equals(aussaatGrid)) {
@@ -229,7 +240,7 @@ public class Botanikkalender_Dialog extends Dialog<ButtonType> {
 	 * Iteriert über alle Kalendereinträge der gewählten Pflanze
 	 * Markiert die jeweiligen Monate im entsprechenden Grid (Aussaat, Blüte, Ernte) anhand des Kalendertyps und der Monatsposition (Month.ordinal())
 	 */
-	@SuppressWarnings("incomplete-switch")
+	@SuppressWarnings("incomplete-switch") // -> weil Rückschnitt hier nicht angezeigt wird
 	private void updateKalender1(ArrayList<Botanikkalender> alKal) {
 		resetKalenderLabels();
 		for (Botanikkalender b : alKal) {

@@ -15,6 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class Util_Help {
@@ -24,16 +25,46 @@ public class Util_Help {
 	 */
 
 	// Hintergrundsetzen für die StackPane
-	public static void hintergrundSetzen(StackPane stack) {
+	public static void hintergrundSetzenLogin(StackPane stack) {
 		// Bild aus Resource laden
-		Image backgroundImage = new Image(BotanikHub_Client.class.getResource("/haupt2.jpeg").toString());
+		Image backgroundImage = new Image(BotanikHub_Client.class.getResource("/Hintergrund_Setzen_Login.jpeg").toString());
 
 		// ImageView anlegen und anpassen
 		ImageView background = new ImageView(backgroundImage);
 		background.setFitWidth(1400);
-		background.setFitHeight(1000);
-		background.setPreserveRatio(true);
+		background.setFitHeight(770);
 
+		background.setSmooth(true);
+		// Bild in die StackPane einfügen
+		stack.getChildren().add(background);
+	}
+
+	// Hintergrundsetzen für die StackPane
+	public static void hintergrundSetzenAdmin(StackPane stack) {
+		// Bild aus Resource laden
+		Image backgroundImage = new Image(BotanikHub_Client.class.getResource("/Hintergrund_Setzen_Admin.jpg").toString());
+
+		// ImageView anlegen und anpassen
+		ImageView background = new ImageView(backgroundImage);
+		background.setFitWidth(1400);
+		background.setFitHeight(770);
+
+		background.setSmooth(true);
+		// Bild in die StackPane einfügen
+		stack.getChildren().add(background);
+	}
+
+	// Hintergrundsetzen für die StackPane
+	public static void hintergrundSetzenBenutzer(StackPane stack) {
+		// Bild aus Resource laden
+		Image backgroundImage = new Image(BotanikHub_Client.class.getResource("/Hintergrund_Setzen_Benutzer.jpg").toString());
+
+		// ImageView anlegen und anpassen
+		ImageView background = new ImageView(backgroundImage);
+		background.setFitWidth(1400);
+		background.setFitHeight(770);
+
+		background.setSmooth(true);
 		// Bild in die StackPane einfügen
 		stack.getChildren().add(background);
 	}
@@ -82,10 +113,13 @@ public class Util_Help {
 			okBtn.getStyleClass().add("alert-button-ok");
 		}
 
-		// CSS-Datei einbinden
+		// CSS-Datei einbinden und den alert in eine eigene DialogPane einbauen
 		DialogPane pane = alert.getDialogPane();
 		pane.getStylesheets().add(BotanikHub_Client.class.getResource("/style.css").toString());
 		pane.getStyleClass().add("dialog-layout");
+		// Icon bei alerts ändern
+		Stage arg1 = (Stage) alert.getDialogPane().getScene().getWindow();
+		arg1.getIcons().add(new Image(BotanikHub_Client.class.getResource("/Window_Icon_Lebensbaum.jpg").toString()));
 
 		return alert;
 	}
@@ -119,7 +153,7 @@ public class Util_Help {
 		if (rechts != null) AnchorPane.setRightAnchor(node, rechts);
 	}
 
-	// Eingabefilterung mit UnaryOperator
+	// Eingabefilterung mit UnaryOperator für Wuchsbreite & Höhe
 	public static UnaryOperator<TextFormatter.Change> gibNurZiffernFilter() {
 		return change -> {
 			// getControlNewText gibt den neuen Gesamttext im Feld zurück
@@ -132,7 +166,7 @@ public class Util_Help {
 			/* Nur erlauben, wenn Zahl oder Kommazahl mit max. 2 Nachkommastellen
 			 * {0.2} steht für 2 maximal 2 Nachkommastellen
 			 * ? steht für Optional -> man muss keine Nachkommastellen setzen */
-			if (neuerText.matches("^\\d{0,3}(\\.\\d{0,2})?$")) {
+			if (neuerText.matches("^\\d{0,4}(\\.\\d{0,2})?$")) {
 
 				return change;
 			}

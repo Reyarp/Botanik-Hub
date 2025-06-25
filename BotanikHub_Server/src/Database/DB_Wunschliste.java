@@ -245,7 +245,6 @@ public class DB_Wunschliste {
 							rs.getString(DB_Util.PFLANZE_BOTAN_NAME),
 							rs.getString(DB_Util.PFLANZE_BILDPFAD),
 							rs.getString(DB_Util.PFLANZE_BASE64),
-							null,
 							pflanzenId,
 							rs.getBoolean(DB_Util.PFLANZE_IS_GIFTIG),
 							rs.getDouble(DB_Util.PFLANZE_WUCHSBREITE),
@@ -259,7 +258,8 @@ public class DB_Wunschliste {
 							new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
 							new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
 							admin,	// admin setzen
-							null	// Keine Notiz für Admin
+							null,	// Keine Notiz für Admin
+							true
 							);
 
 					// letzteID merken

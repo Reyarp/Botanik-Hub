@@ -34,6 +34,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
 import java.io.ByteArrayInputStream;
 
 
@@ -50,6 +52,11 @@ public class Pflanze_Ansehen_Dialog extends Dialog<ButtonType> {
 
 	public Pflanze_Ansehen_Dialog(PflanzeFX p, Benutzer benutzer) {
 
+		/*
+		 * Dieser Dialog ist rein zum Ansehen der pflanzen gedacht
+		 * Befüllt mit Labels und Textareas
+		 */
+		
 		// Typen & Kalender vorbereiten
 		typ = p.getAppPflanze().getPflanzenTyp();
 		teile = p.getAppPflanze().getVerwendeteTeile();
@@ -92,12 +99,14 @@ public class Pflanze_Ansehen_Dialog extends Dialog<ButtonType> {
 		String base64 = p.getAppPflanze().getBildBase64();
 		if (base64 != null && !base64.isBlank()) {
 			try {
+				// Bild dekodieren
 				byte[] imageBytes = Base64.getDecoder().decode(base64);
+				// Vorschaubild setzen -> new ByteArrayInputStream(das Base64 Bild)
 				Image base64Image = new Image(new ByteArrayInputStream(imageBytes));
 				pflanzeBild.setImage(base64Image);
 			} catch (IllegalArgumentException ex) {
 				Util_Help.alertWindow(AlertType.ERROR, "Fehler: Pflanze Ansehen(Base64)", ex.getMessage());
-				pflanzeBild.setImage(new Image(BotanikHub_Client.class.getResource("/keinBild.jpg").toString()));
+				pflanzeBild.setImage(new Image(BotanikHub_Client.class.getResource("/Pflanze_Ansehen_KeinBild.jpg").toString()));
 			}
 		} else {
 			// Falls kein Base64 vorhanden: Fallback auf lokales Bild oder keinBild.jpg
@@ -107,10 +116,10 @@ public class Pflanze_Ansehen_Dialog extends Dialog<ButtonType> {
 					Image bild = new Image("file:" + pfad, true);
 					pflanzeBild.setImage(bild);
 				} catch (Exception e) {
-					pflanzeBild.setImage(new Image(BotanikHub_Client.class.getResource("/keinBild.jpg").toString()));
+					pflanzeBild.setImage(new Image(BotanikHub_Client.class.getResource("/Pflanze_Ansehen_KeinBild.jpg").toString()));
 				}
 			} else {
-				pflanzeBild.setImage(new Image(BotanikHub_Client.class.getResource("/keinBild.jpg").toString()));
+				pflanzeBild.setImage(new Image(BotanikHub_Client.class.getResource("/Pflanze_Ansehen_KeinBild.jpg").toString()));
 			}
 		}
 
@@ -135,6 +144,9 @@ public class Pflanze_Ansehen_Dialog extends Dialog<ButtonType> {
 		this.getDialogPane().setContent(gesamt);
 		this.getDialogPane().getStylesheets().add(BotanikHub_Client.class.getResource("/style.css").toString());
 		this.getDialogPane().getStyleClass().add("dialog-layout");
+		// Stage holen zum Icon setzen, da ich direkt im Dialog keins setzen kann
+		Stage arg1 = (Stage) this.getDialogPane().getScene().getWindow();
+		arg1.getIcons().add(new Image(BotanikHub_Client.class.getResource("/Window_Icon_Lebensbaum.jpg").toString()));
 	}
 
 	public Tab allgemeineinfo(PflanzeFX p) {
@@ -336,45 +348,45 @@ public class Pflanze_Ansehen_Dialog extends Dialog<ButtonType> {
 						.limit(2)
 						.map(Month::getBeschreibung).collect(Collectors.joining(", ")))
 				.collect(Collectors.joining("\n ")));;
-		TextArea ernLbl = new TextArea(IntStream.range(0, (ernte.size() +1) /2)
-				.mapToObj(i -> ernte.stream()
-						.skip(i * 2)
-						.limit(2)
-						.map(Month::getBeschreibung).collect(Collectors.joining(", ")))
-				.collect(Collectors.joining("\n ")));;
+				TextArea ernLbl = new TextArea(IntStream.range(0, (ernte.size() +1) /2)
+						.mapToObj(i -> ernte.stream()
+								.skip(i * 2)
+								.limit(2)
+								.map(Month::getBeschreibung).collect(Collectors.joining(", ")))
+						.collect(Collectors.joining("\n ")));;
 
-		ausLbl.setPrefSize(260, 50);
-		blueLbl.setPrefSize(260, 50);
-		ernLbl.setPrefSize(260, 50);
-		ausLbl.setEditable(false);
-		blueLbl.setEditable(false);
-		ernLbl.setEditable(false);
+						ausLbl.setPrefSize(260, 50);
+						blueLbl.setPrefSize(260, 50);
+						ernLbl.setPrefSize(260, 50);
+						ausLbl.setEditable(false);
+						blueLbl.setEditable(false);
+						ernLbl.setEditable(false);
 
-		// CSS Styling
-		ausLbl.getStyleClass().add("dialog-label-info");
-		blueLbl.getStyleClass().add("dialog-label-info");
-		ernLbl.getStyleClass().add("dialog-label-info");
+						// CSS Styling
+						ausLbl.getStyleClass().add("dialog-label-info");
+						blueLbl.getStyleClass().add("dialog-label-info");
+						ernLbl.getStyleClass().add("dialog-label-info");
 
-		// Layout: GridPane
-		GridPane grid = new GridPane();
-		grid.setHgap(60);
-		grid.setVgap(10);
+						// Layout: GridPane
+						GridPane grid = new GridPane();
+						grid.setHgap(60);
+						grid.setVgap(10);
 
-		grid.add(new Label("Aussaatzeit:"), 0, 0);
-		grid.add(ausLbl, 1, 0);
-		grid.add(new Label("Blütezeit:"), 0, 1);
-		grid.add(blueLbl, 1, 1);
-		grid.add(new Label("Erntezeit:"), 0, 2);
-		grid.add(ernLbl, 1, 2);
+						grid.add(new Label("Aussaatzeit:"), 0, 0);
+						grid.add(ausLbl, 1, 0);
+						grid.add(new Label("Blütezeit:"), 0, 1);
+						grid.add(blueLbl, 1, 1);
+						grid.add(new Label("Erntezeit:"), 0, 2);
+						grid.add(ernLbl, 1, 2);
 
-		// Zusammenbau & Dialogeinstellungen
-		VBox vb = new VBox(grid);
-		vb.setPadding(new Insets(15, 0, 0, 0));
+						// Zusammenbau & Dialogeinstellungen
+						VBox vb = new VBox(grid);
+						vb.setPadding(new Insets(15, 0, 0, 0));
 
-		Tab tabKal = new Tab("Kalender");
-		tabKal.setClosable(false);
-		tabKal.setContent(vb);
-		return tabKal;
+						Tab tabKal = new Tab("Kalender");
+						tabKal.setClosable(false);
+						tabKal.setContent(vb);
+						return tabKal;
 	}
 
 	public Tab notiz(PflanzeFX p) {

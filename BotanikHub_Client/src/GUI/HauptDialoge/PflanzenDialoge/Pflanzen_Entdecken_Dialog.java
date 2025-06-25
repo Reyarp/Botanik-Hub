@@ -27,6 +27,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class Pflanzen_Entdecken_Dialog extends Dialog<ButtonType> {
@@ -41,7 +42,7 @@ public class Pflanzen_Entdecken_Dialog extends Dialog<ButtonType> {
 		 * Hier kann er Pflanzen erstellt vom Admin ansehen 
 		 * entweder er tut sie in seine Sammlung oder in die Wunschliste
 		 */
-		
+
 		// Buttons & Co
 		Button abbrechen = new Button("Abbrechen");
 		Button zuBotnikHub = new Button("Zu Botnik-Hub hinzufügen");
@@ -52,7 +53,7 @@ public class Pflanzen_Entdecken_Dialog extends Dialog<ButtonType> {
 		pflanzeAnsehen.setDisable(true);
 
 		// Header Bild
-		ImageView headerBild = new ImageView(new Image(BotanikHub_Client.class.getResource("/PflanzenEntdecken.png").toString()));
+		ImageView headerBild = new ImageView(new Image(BotanikHub_Client.class.getResource("/Pflanzen_Entdecken_Headerbild.png").toString()));
 		headerBild.setCache(true);
 		headerBild.setFitHeight(90);
 		headerBild.setFitWidth(725);
@@ -62,7 +63,7 @@ public class Pflanzen_Entdecken_Dialog extends Dialog<ButtonType> {
 		TextField suchTxt = new TextField();
 		suchTxt.setPromptText("Nach Pflanzenname suchen");
 		suchTxt.setPrefWidth(150);
-		
+
 		// CSS Styling
 		abbrechen.getStyleClass().add("kalender-dialog-button-cancel");
 		zuBotnikHub.getStyleClass().add("kalender-dialog-button-ok");
@@ -91,8 +92,8 @@ public class Pflanzen_Entdecken_Dialog extends Dialog<ButtonType> {
 
 		// readMethode -> unten
 		readPflanzen(benutzer);
-		
-		
+
+
 		/* Da ich keine ButtonTypes hier verwendet habe musste ich eine andere Lösung zum schliessen finden
 		 * über this.setResult kann ich dem Fenster sagen -> ButtonType.Cancel = Schliesse das fenster
 		 */
@@ -101,7 +102,8 @@ public class Pflanzen_Entdecken_Dialog extends Dialog<ButtonType> {
 		this.getDialogPane().getScene().getWindow().addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> {
 			this.setResult(ButtonType.CANCEL);
 		});
-		
+
+		// Changelistener auf das Suchfeld -> aktualisiert die pflanzenliste nach jeder Suche -> methode unten
 		suchTxt.textProperty().addListener(e ->{
 			try {
 				ArrayList<Pflanze> filter = Service_Pflanze.getPflanze(suchTxt.getText());
@@ -110,7 +112,7 @@ public class Pflanzen_Entdecken_Dialog extends Dialog<ButtonType> {
 				Util_Help.alertWindow(AlertType.ERROR, "Fehler Pflanze Entdecken:", e1.getMessage());
 			}
 		});
-		
+
 		// Eventhandler: zuBotanikHub, zuWunschliste, pflanzeAnsehen
 		zuBotnikHub.setOnAction(e -> {
 			try {
@@ -118,7 +120,7 @@ public class Pflanzen_Entdecken_Dialog extends Dialog<ButtonType> {
 				// 1. Zu Botanik-Hub hinzufügen -> Benutzer als besitzer
 				BotanikHub hub = new BotanikHub(benutzer, selected);
 				Service_BotanikHub.postBotanikHub(hub);
-				
+
 				// 2. Aus Wunschliste entfernen
 				Service_Wunschliste.deleteWunschliste(benutzer.getBenutzerId(),selected.getPflanzenID());
 				Util_Help.alertWindow(AlertType.INFORMATION, "Info: Botanik-Hub", "Pflanze erfolgreich zu Botanik-Hub hinzugefügt").showAndWait();
@@ -182,6 +184,9 @@ public class Pflanzen_Entdecken_Dialog extends Dialog<ButtonType> {
 		this.getDialogPane().getStyleClass().add("kalender-dialog-layout");
 		this.getDialogPane().setPrefHeight(500);
 		this.getDialogPane().setPrefWidth(725);
+		// Stage holen zum Icon setzen, da ich direkt im Dialog keins setzen kann
+		Stage arg1 = (Stage) this.getDialogPane().getScene().getWindow();
+		arg1.getIcons().add(new Image(BotanikHub_Client.class.getResource("/Window_Icon_Lebensbaum.jpg").toString()));
 	}
 
 	private void updateSuchfeld(ArrayList<Pflanze> filter) {
@@ -196,6 +201,7 @@ public class Pflanzen_Entdecken_Dialog extends Dialog<ButtonType> {
 
 	private void readPflanzen(Benutzer benutzer) {
 		try {
+			// Readmethode für Pflanzen
 			ArrayList<Pflanze> alPflanze = Service_PflanzeEntdecken.getPEPflanzen(benutzer.getBenutzerId());
 			olPflanze.clear();
 			for(Pflanze einePflanze : alPflanze) {

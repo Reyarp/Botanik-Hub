@@ -4,7 +4,8 @@ public enum Intervall {
 	TAEGLICH("Täglich"),
 	WOECHENTLICH("Wöchentlich"),
 	MONATLICH("Monatlich"),
-	JAEHRLICH("Jährlich");
+	JAEHRLICH("Jährlich"),
+	NICHT_NOETIG("Nicht nötig");
 
 	private String beschreibung;
 

@@ -14,6 +14,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 public class KalenderTyp_Dialog extends Dialog<ButtonType> {
@@ -26,7 +27,7 @@ public class KalenderTyp_Dialog extends Dialog<ButtonType> {
 		/*
 		 * Subdialog für Kalendertyp auswahl
 		 */
-		
+
 		// Buttons & Co
 		ButtonType anwenden = new ButtonType("Anwenden", ButtonData.OK_DONE);
 		ButtonType abbrechen = new ButtonType("Abbrechen", ButtonData.CANCEL_CLOSE);
@@ -38,7 +39,7 @@ public class KalenderTyp_Dialog extends Dialog<ButtonType> {
 		cancel.getStyleClass().add("dialog-button-cancel");
 
 		// Headerbild
-		ImageView header = new ImageView(new Image(BotanikHub_Client.class.getResource("/kalender1.jpg").toString()));
+		ImageView header = new ImageView(new Image(BotanikHub_Client.class.getResource("/Kalendertyp_Dialog_Headerbild.jpg").toString()));
 		header.setFitWidth(200);
 		header.setPreserveRatio(true);
 
@@ -46,7 +47,7 @@ public class KalenderTyp_Dialog extends Dialog<ButtonType> {
 		Month[] monate = Month.values();	
 		// CheckBoxen befüllt mit EnumTyp
 		CheckBox[] checkboxen = new CheckBox[monate.length];
-		
+
 		// Layout: GridPane
 		GridPane grid = new GridPane();
 		grid.setHgap(10);
@@ -106,6 +107,9 @@ public class KalenderTyp_Dialog extends Dialog<ButtonType> {
 		this.getDialogPane().setContent(vb1);
 		this.getDialogPane().getStylesheets().add(BotanikHub_Client.class.getResource("/style.css").toString());
 		this.getDialogPane().getStyleClass().add("dialog-layout");
+		// Stage holen zum Icon setzen, da ich direkt im Dialog keins setzen kann
+		Stage arg1 = (Stage) this.getDialogPane().getScene().getWindow();
+		arg1.getIcons().add(new Image(BotanikHub_Client.class.getResource("/Window_Icon_Lebensbaum.jpg").toString()));
 	}
 
 	// Getter für die ausgewählten Monate

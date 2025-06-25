@@ -22,87 +22,81 @@ import jakarta.ws.rs.core.Response.Status;
 @Path("pflanze")
 public class Resource_Pflanze {
 
-	/* POST /Pflanze
-	 * Hier kommt der Teil für den Bildupload rein
-	 * Einen Zielordner festlegen zum abspeichern über Path methoden
-	 * Dateiname erstetzen (Optional) für bessere lesbarkeit
-	 * byte[] Array dekodieren und die Datei in den ordner Speichern
-	 * Bildpfad in die DB speichern -> anschliessend den Base64 String auf null setzen
-	 * Da ich die datei nicht in die DB_Pflanze speichere
-	 */
+	// POST /pflanze – legt eine neue Pflanze an
+	// Hinweis: Bildverarbeitung (Base64 → Pfad) ist derzeit nicht aktiv, nur DB-Insert
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON) // Erwartet Pflanzendaten im JSON-Format
+	@Produces(MediaType.APPLICATION_JSON) // Gibt Pflanze als JSON zurück
 	public Response postPflanze(Pflanze pflanze) {
-
 		try {
+			// Neue Pflanze in DB einfügen
 			DB_Pflanze.insertPflanze(pflanze);
 			return Response.status(Status.CREATED).entity(pflanze).build();
-
-		} catch(SQLException e) {
-			if(e.getMessage().contains("unique")) {
-				return Response.status(Response.Status.CONFLICT).entity("Pflanzenname bereits vorhanden").build();
+		} catch (SQLException e) {
+			// Prüfung auf doppelte Einträge (z. B. Pflanzenname)
+			if (e.getMessage().contains("unique")) {
+				return Response.status(Response.Status.CONFLICT)
+					.entity("Pflanzenname bereits vorhanden").build();
 			}
-			return Response.serverError().entity("Fehler: POST Pflanze" + e.toString()).build();
+			// Allgemeiner SQL-Fehler
+			return Response.serverError().entity("Fehler: POST Pflanze " + e.toString()).build();
 		}
 	}
 
-	/* PUT /pflanze
-	 * updatePflanze
-	 */
+	// PUT /pflanze/{id} – aktualisiert eine bestehende Pflanze
 	@PUT
-	@Path("{id}")
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("{id}") // ID aus Pfad übernehmen
+	@Consumes(MediaType.APPLICATION_JSON) // Erwartet Pflanzendaten als JSON
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response putPflanze(@PathParam("id") int id, Pflanze pflanze) {
 		try {
+			// ID im Objekt setzen (zur Sicherheit)
 			pflanze.setPflanzenID(id);
+			// Pflanze in DB aktualisieren
 			DB_Pflanze.updatePflanze(pflanze);
 			return Response.status(Status.OK).build();
-		} catch(SQLException e) {
+		} catch (SQLException e) {
+			// Fehler bei Konflikt (z. B. Pflanzenname)
 			return Response.serverError().entity("Pflanze existiert bereits").build();
 		}
 	}
 
-	/* DELETE /pflanze
-	 * Da das Bild nicht in der DB_Pflanze gespeichert wird 
-	 * muss ich sie manuell entfernen
-	 * Dazu brauch ich die PflanzeID -> DB_Pflanze methode
-	 */
+	// DELETE /pflanze/{id} – löscht eine Pflanze anhand der ID
 	@DELETE
 	@Path("{id}")
-	public Response deletePflanze(@PathParam("id") int id){
+	public Response deletePflanze(@PathParam("id") int id) {
 		try {
+			// Pflanze aus DB löschen
 			DB_Pflanze.deletePflanze(id);
 			return Response.status(Status.NO_CONTENT).build();
-		} catch(SQLException e) {
-			return Response.serverError().entity("Fehler: DELETE Pflanze" + e.toString()).build();
+		} catch (SQLException e) {
+			// Fehler beim Löschen
+			return Response.serverError().entity("Fehler: DELETE Pflanze " + e.toString()).build();
 		}
 	}
 
-	/*
-	 * GET /pflanze
-	 * Liefert alle Pflanzen oder gefilterte Pflanzen über ?suchtext=
-	 */
+	// GET /pflanze[?suchtext=...] – gibt alle oder gefilterte Pflanzen zurück
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON) // Antwort ist Liste von Pflanzen als JSON
 	public Response getPflanzen(@QueryParam("suchtext") String text) {
 		try {
 			ArrayList<Pflanze> pflanzen;
-
+			// Wenn Suchtext vorhanden → gefiltert suchen
 			if (text != null && !text.isBlank()) {
 				pflanzen = DB_Pflanze.readPflanzenByFilter(text);
 			} else {
+				// Sonst alle Pflanzen laden
 				pflanzen = DB_Pflanze.readAllePflanzen();
 			}
-
 			return Response.status(Status.OK).entity(pflanzen).build();
-
 		} catch (SQLException e) {
+			// Fehler beim Lesen
 			return Response.serverError().entity("Fehler: GET Pflanze " + e.toString()).build();
 		}
 	}
-	
+}
+
+
 //	/*
 //	 * Das ist die Bild Upload Version mit eigenen Ordner Ohne DB Speicherung
 //	 */
@@ -152,4 +146,3 @@ public class Resource_Pflanze {
 //			return Response.serverError().entity("Fehler: POST Pflanze" + e.toString()).build();
 //		}
 //	}
-}

@@ -13,6 +13,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -21,7 +22,7 @@ import javafx.util.Duration;
 
 public class Login_Dialog extends Dialog<ButtonType> {
 
-	public Login_Dialog(StackPane stack, Stage stage) {
+	public Login_Dialog(StackPane stack, Stage arg0) {
 
 		/*
 		 * Dies ist der Logindialog
@@ -76,9 +77,9 @@ public class Login_Dialog extends Dialog<ButtonType> {
 				BotanikHub_Client.setBenutzer(benutzer);
 
 				if (benutzer.getTyp() == BenutzerTyp.ADMIN) {
-					Admin_Startseite.oeffneAdminSeite(stack, stage, benutzer);
+					Admin_Startseite.oeffneAdminSeite(stack, arg0, benutzer);
 				} else {
-					Benutzer_Startseite.oeffneBenutzerSeite(stack, stage, benutzer);
+					Benutzer_Startseite.oeffneBenutzerSeite(stack, arg0, benutzer);
 				}
 				
 				Util_Help.alertWindow(AlertType.INFORMATION, "Info: Login Erfolgreich", "Willkommen " + benutzer.getBenutzerName()).showAndWait();
@@ -100,5 +101,8 @@ public class Login_Dialog extends Dialog<ButtonType> {
 		this.getDialogPane().setContent(vb);
 		this.getDialogPane().getStylesheets().add(BotanikHub_Client.class.getResource("/style.css").toString());
 		this.getDialogPane().getStyleClass().add("dialog-layout");
+		// Stage holen zum Icon setzen, da ich direkt im Dialog keins setzen kann
+		Stage arg1 = (Stage) this.getDialogPane().getScene().getWindow();
+		arg1.getIcons().add(new Image(BotanikHub_Client.class.getResource("/Window_Icon_Lebensbaum.jpg").toString()));
 	}
 }

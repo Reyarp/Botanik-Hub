@@ -43,7 +43,7 @@ public class DB_Util {
 	//Verbindungstabelle
 	public static final String BOTANIK_HUB_TABLE = "BOTANIK_HUB_TABLE";
 	public static final String BOTANIK_HUB_PFLANZE_NOTIZ = "BOTANIK_HUB_PFLANZE_NOTIZ";
-	public static final String BOTANIK_HUB_BASE64 = "BOTANIK_HUB_BASE64";
+	public static final String BOTANIK_HUB_IS_ADMIN_PFLANZE = "IS_ADMIN_PFLANZE";
 	
 	//Verbindungstabelle
 	public static final String PFLANZE_ENTDECKEN_TABLE = "PFLANZE_ENTDECKEN_TABLE";

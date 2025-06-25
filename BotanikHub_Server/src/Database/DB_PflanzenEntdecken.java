@@ -232,7 +232,6 @@ public class DB_PflanzenEntdecken {
 							rs.getString(DB_Util.PFLANZE_BOTAN_NAME),
 							rs.getString(DB_Util.PFLANZE_BILDPFAD),
 							rs.getString(DB_Util.PFLANZE_BASE64),
-							null,
 							pflanzenId,
 							rs.getBoolean(DB_Util.PFLANZE_IS_GIFTIG),
 							rs.getDouble(DB_Util.PFLANZE_WUCHSBREITE),
@@ -246,7 +245,8 @@ public class DB_PflanzenEntdecken {
 							new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
 							new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
 							admin,	// admin setzen
-							null	// Keine Notiz bei Admin
+							null,	// Keine Notiz bei Admin
+							true
 							);
 
 					// letzteID merken

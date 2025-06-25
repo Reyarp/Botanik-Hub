@@ -67,6 +67,9 @@ public class DB_Pflanze {
 					"PRIMARY KEY(" + DB_Util.PFLANZE_ID + ")," +
 					"FOREIGN KEY(" + DB_Util.BENUTZER_ID + ") REFERENCES " + DB_Util.BENUTZER_TABLE + "(" + DB_Util.BENUTZER_ID + ")" +
 					")";
+			
+			
+			
 			stmt.executeUpdate(create);
 
 		} catch(SQLException e) {
@@ -131,15 +134,7 @@ public class DB_Pflanze {
 			stmt.setString(12, pflanze.getStandort().getBeschreibung());
 			stmt.setString(13, pflanze.getLebensdauer().getBeschreibung());
 			stmt.setInt(14, pflanze.getBenutzer().getBenutzerId());
-
-			/*
-			 * 
-			 * 
-			 */
-			System.out.println("Wird gespeichert - Base64 vorhanden? " + (pflanze.getBildBase64() != null));
-			System.out.println("Base64 Länge: " + (pflanze.getBildBase64() != null ? pflanze.getBildBase64().length() : "null"));
-
-
+			
 			stmt.executeUpdate();			// Pflanze einfügen
 			rs = stmt.getGeneratedKeys(); 	// & dann Pflanzen ID holen 
 
@@ -289,15 +284,6 @@ public class DB_Pflanze {
 			updateStmt.setString(13, pflanze.getLebensdauer().getBeschreibung());
 			updateStmt.setInt(14, pflanze.getBenutzer().getBenutzerId());
 			updateStmt.setInt(15, pflanze.getPflanzenID());
-
-
-			/*
-			 * 
-			 * 
-			 */
-			System.out.println("Wird geupdatet - Base64 vorhanden? " + (pflanze.getBildBase64() != null));
-			System.out.println("Base64 Länge: " + (pflanze.getBildBase64() != null ? pflanze.getBildBase64().length() : "null"));
-
 
 			updateStmt.executeUpdate();
 
@@ -613,7 +599,6 @@ public class DB_Pflanze {
 							rs.getString(DB_Util.PFLANZE_BOTAN_NAME),
 							rs.getString(DB_Util.PFLANZE_BILDPFAD),
 							rs.getString(DB_Util.PFLANZE_BASE64),
-							null,
 							pflanzenId,
 							rs.getBoolean(DB_Util.PFLANZE_IS_GIFTIG),
 							rs.getDouble(DB_Util.PFLANZE_WUCHSBREITE),
@@ -627,7 +612,8 @@ public class DB_Pflanze {
 							new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
 							new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
 							pflanzeBesitzer,	// admin setzen
-							null	// Keine Notiz bei Admin
+							null,	// Keine Notiz bei Admin
+							true
 							);
 
 

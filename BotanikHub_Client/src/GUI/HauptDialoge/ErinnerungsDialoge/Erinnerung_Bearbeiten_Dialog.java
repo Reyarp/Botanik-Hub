@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import Client.BotanikHub_Client;
 import GUI.HauptDialoge.PflanzenDialoge.SubDialoge.ErinnerungsTyp_Dialog;
-import GUI.HauptDialoge.PflanzenDialoge.SubDialoge.Pflanze_Intervall_Dialog;
+import GUI.HauptDialoge.PflanzenDialoge.SubDialoge.Intervall_Dialog;
 import GUI.Utilitys.Util_Animations;
 import GUI.Utilitys.Util_Help;
 import ModellFX.ErinnerungenFX;
@@ -15,8 +15,10 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class Erinnerung_Bearbeiten_Dialog extends Dialog<ButtonType> {
@@ -80,7 +82,7 @@ public class Erinnerung_Bearbeiten_Dialog extends Dialog<ButtonType> {
 		grid.add(new Label("Intervall:"), 0, 4);
 		grid.add(intervall, 1, 4);
 		grid.add(intervallLbl, 1, 5, 4, 2);		
-		
+
 		// Eventhandler: erTyp, intervall, speichern
 		erTyp.setOnAction(e -> {
 			ErinnerungsTyp_Dialog dialog = new ErinnerungsTyp_Dialog(erinnerung);
@@ -93,7 +95,7 @@ public class Erinnerung_Bearbeiten_Dialog extends Dialog<ButtonType> {
 		});
 
 		intervall.setOnAction(e -> {
-			Pflanze_Intervall_Dialog dialog = new Pflanze_Intervall_Dialog(erinnerung);
+			Intervall_Dialog dialog = new Intervall_Dialog(erinnerung);
 			Optional<ButtonType> o = dialog.showAndWait();
 			if (o.isPresent() && o.get().getButtonData() == ButtonData.OK_DONE) {
 				if (erinnerung.getAppErinnerung().getIntervall() != null) {
@@ -138,5 +140,8 @@ public class Erinnerung_Bearbeiten_Dialog extends Dialog<ButtonType> {
 		this.getDialogPane().setContent(grid);
 		this.getDialogPane().getStylesheets().add(BotanikHub_Client.class.getResource("/style.css").toString());
 		this.getDialogPane().getStyleClass().add("dialog-layout");
+		// Stage holen zum Icon setzen, da ich direkt im Dialog keins setzen kann
+		Stage arg1 = (Stage) this.getDialogPane().getScene().getWindow();
+		arg1.getIcons().add(new Image(BotanikHub_Client.class.getResource("/Window_Icon_Lebensbaum.jpg").toString()));
 	}
 }

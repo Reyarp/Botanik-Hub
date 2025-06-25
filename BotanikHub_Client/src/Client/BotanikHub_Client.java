@@ -21,14 +21,19 @@ public class BotanikHub_Client extends Application {
 	@Override
 	public void start(Stage arg0) throws Exception {
 
+		/*
+		 * start Methode für die Kommplette GUI
+		 */
 		
 		// Layout & Zusammenbau & Dialogeinstellungen
 		StackPane stack = new StackPane(); 						
 		Login_Startseite.erstelleStartSeite(stack, arg0); 		
 		VBox vb = new VBox(stack);								
 
-		arg0.setResizable(false); 	// Fenstergröße fixieren
-		arg0.getIcons().add(new Image(BotanikHub_Client.class.getResource("/lebensbaum-sticker.jpg").toString()));
+		// Fenstergröße fixieren -> kann man nicht ändern
+		arg0.setResizable(false); 	
+		// Icon setzen
+		arg0.getIcons().add(new Image(BotanikHub_Client.class.getResource("/Window_Icon_Lebensbaum.jpg").toString()));
 		arg0.setTitle("BotanikHub");
 
 		Scene scene = new Scene(vb);

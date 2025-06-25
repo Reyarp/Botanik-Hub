@@ -16,51 +16,69 @@ import jakarta.ws.rs.core.Response.Status;
 
 public class Service_PflanzeEntdecken {
 
-	public static void postPflanzeEntdecken(PflanzenEntdecken entdecken) throws SQLException{
+	// Legt einen Eintrag in der Tabelle pflanze-entdecken an (POST /pflanze-entdecken)
+	public static void postPflanzeEntdecken(PflanzenEntdecken entdecken) throws SQLException {
+		// HTTP-Client erstellen
 		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target("http://localhost:4711/pflanze-entdecken");	 	// Ziel-URL: http://localhost:4711/benutzer
+		// Ziel-URL für POST-Anfrage
+		WebTarget target = client.target("http://localhost:4711/pflanze-entdecken");
 
-		Response response = target												 // Sende POST-Request: Benutzer als JSON, akzeptiere Text als Antwort
-				.request(MediaType.TEXT_PLAIN)                        			 // Erwartet eine Textantwort
-				.post(Entity.entity(entdecken, MediaType.APPLICATION_JSON));		 	 // Sendet JSON-Daten
-
-		if (response.getStatus() == Status.CREATED.getStatusCode()) {			 // Wenn der Server keinen 201 CREATED zurückgibt -> Fehler
-			client.close();
-		} else {
-			String e = response.readEntity(String.class);						 // Lese den Fehlertext aus der Serverantwort
-			client.close();
-			throw new SQLException(e);											 // Wirf SQL-Fehler mit dem Servertext
-		}
-	}
-	
-	public static void deletePflanzeEntdecken(int pflanzeID, int benutzeriD) throws SQLException{
-		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target("http://localhost:4711/pflanze-entdecken/" + pflanzeID + "/" + benutzeriD);
-		
+		// Sende POST-Anfrage mit JSON-Daten
 		Response response = target
-				.request(MediaType.APPLICATION_JSON)
-				.delete();
-		
-		if(response.getStatus() == Status.NO_CONTENT.getStatusCode()) {
+				.request(MediaType.TEXT_PLAIN)
+				.post(Entity.entity(entdecken, MediaType.APPLICATION_JSON));
+
+		// Erfolg: 201 CREATED
+		if (response.getStatus() == Status.CREATED.getStatusCode()) {
 			client.close();
 		} else {
+			// Fehlertext auslesen und weiterwerfen
 			String e = response.readEntity(String.class);
 			client.close();
 			throw new SQLException(e);
 		}
 	}
-	
-	public static ArrayList<Pflanze> getPEPflanzen(int benutzerID) throws SQLException{
+
+	// Löscht einen Eintrag aus pflanze-entdecken (DELETE /pflanze-entdecken/{pflanzeID}/{benutzerID})
+	public static void deletePflanzeEntdecken(int pflanzeID, int benutzeriD) throws SQLException {
+		// HTTP-Client erstellen
 		Client client = ClientBuilder.newClient();
+		// Ziel-URL mit Pflanze- und Benutzer-ID
+		WebTarget target = client.target("http://localhost:4711/pflanze-entdecken/" + pflanzeID + "/" + benutzeriD);
+
+		// Sende DELETE-Anfrage
+		Response response = target
+				.request(MediaType.APPLICATION_JSON)
+				.delete();
+
+		// Erfolg: 204 NO_CONTENT
+		if (response.getStatus() == Status.NO_CONTENT.getStatusCode()) {
+			client.close();
+		} else {
+			// Fehlertext auslesen und weiterwerfen
+			String e = response.readEntity(String.class);
+			client.close();
+			throw new SQLException(e);
+		}
+	}
+
+	// Holt alle Entdecker-Pflanzen für einen Benutzer (GET /pflanze-entdecken/{benutzerID})
+	public static ArrayList<Pflanze> getPEPflanzen(int benutzerID) throws SQLException {
+		// HTTP-Client erstellen
+		Client client = ClientBuilder.newClient();
+		// Ziel-URL mit Benutzer-ID
 		WebTarget target = client.target("http://localhost:4711/pflanze-entdecken/" + benutzerID);
-		
+
+		// Sende GET-Anfrage
 		Response response = target.request(MediaType.APPLICATION_JSON).get();
-		
-		if(response.getStatus() == Status.OK.getStatusCode()) {
+
+		// Erfolg: 200 OK → Liste auslesen
+		if (response.getStatus() == Status.OK.getStatusCode()) {
 			ArrayList<Pflanze> alP = response.readEntity(new GenericType<ArrayList<Pflanze>>() {});
 			client.close();
 			return alP;
 		} else {
+			// Fehlertext auslesen und weiterwerfen
 			String e = response.readEntity(String.class);
 			client.close();
 			throw new SQLException(e);

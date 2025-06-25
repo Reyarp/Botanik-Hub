@@ -31,8 +31,6 @@ public class DB_Benutzer {
 					DB_Util.BENUTZER_BENUTZERROLLE + " VARCHAR(50)," +
 					"PRIMARY KEY(" + DB_Util.BENUTZER_ID + "))";
 
-
-
 			stmt.executeUpdate(create);
 
 			// Admin-Benutzer (hartcodiert)

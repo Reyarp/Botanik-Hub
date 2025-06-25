@@ -36,6 +36,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class Pflanze_Wunschliste_Dialog extends Dialog<ButtonType> {
@@ -59,7 +60,7 @@ public class Pflanze_Wunschliste_Dialog extends Dialog<ButtonType> {
 		entfernen.setDisable(true);
 
 		// Header-Bild
-		ImageView headerBild = new ImageView(new Image(BotanikHub_Client.class.getResource("/wunschliste.jpg").toString()));
+		ImageView headerBild = new ImageView(new Image(BotanikHub_Client.class.getResource("/Wunschliste_Dialog_Headerbild.jpg").toString()));
 		headerBild.setCache(true);
 		headerBild.setFitHeight(90);
 		headerBild.setFitWidth(725);
@@ -91,9 +92,9 @@ public class Pflanze_Wunschliste_Dialog extends Dialog<ButtonType> {
 		tvWunsch.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
 		// readMethode -> unten
-		readPflanzen();
-		
-		
+		readPflanzen(benutzer);
+
+
 		/* Da ich keine ButtonTypes hier verwendet habe musste ich eine andere Lösung zum schliessen finden
 		 * über this.setResult kann ich dem Fenster sagen -> ButtonType.Cancel = Schliesse das fenster
 		 */
@@ -107,17 +108,17 @@ public class Pflanze_Wunschliste_Dialog extends Dialog<ButtonType> {
 		zuBotnikHub.setOnAction(e -> {
 			try {
 				Pflanze selected = tvWunsch.getSelectionModel().getSelectedItem().getPflanze();
-				
+
 				// 1. Insert in Botanik-Hub
 				BotanikHub hub = new BotanikHub(benutzer, selected);
 				Service_BotanikHub.postBotanikHub(hub);
-				
+
 				// 2. Delete aus Wunschliste -> Sonst exception
 				Service_Wunschliste.deleteWunschliste(selected.getPflanzenID(), benutzer.getBenutzerId());
 				Util_Help.alertWindow(AlertType.INFORMATION, "Info: Wunschliste", "Pflanze erfolgreich zu Botanik-Hub hinzugefügt").showAndWait();
-				readPflanzen();
+				readPflanzen(benutzer);
 			} catch (SQLException e1) {
-				e1.printStackTrace();
+				Util_Help.alertWindow(AlertType.ERROR, "Fehler: Wunschliste", e1.getMessage());
 			}
 		});
 
@@ -125,9 +126,9 @@ public class Pflanze_Wunschliste_Dialog extends Dialog<ButtonType> {
 			try {
 				Service_Wunschliste.deleteWunschliste(tvWunsch.getSelectionModel().getSelectedItem().getPflanze().getPflanzenID(), benutzer.getBenutzerId());
 				Util_Help.alertWindow(AlertType.INFORMATION, "Info: Wunschliste", "Pflanze aus Wunschliste entfernt").showAndWait();
-				readPflanzen();
+				readPflanzen(benutzer);
 			} catch (SQLException e1) {
-				e1.printStackTrace();
+				Util_Help.alertWindow(AlertType.ERROR, "Fehler: Wunschliste", e1.getMessage());
 			}
 		});
 
@@ -164,11 +165,14 @@ public class Pflanze_Wunschliste_Dialog extends Dialog<ButtonType> {
 		this.getDialogPane().getStyleClass().add("kalender-dialog-layout");
 		this.getDialogPane().setPrefHeight(500);
 		this.getDialogPane().setPrefWidth(725);
+		// Stage holen zum Icon setzen, da ich direkt im Dialog keins setzen kann
+		Stage arg1 = (Stage) this.getDialogPane().getScene().getWindow();
+		arg1.getIcons().add(new Image(BotanikHub_Client.class.getResource("/Window_Icon_Lebensbaum.jpg").toString()));
 	}
-	
-	private void readPflanzen() {
+
+	private void readPflanzen(Benutzer benutzer) {
 		try {
-			Benutzer benutzer = BotanikHub_Client.getBenutzer();
+			// Readmethode für Pflanzen
 			ArrayList<MeineWunschliste> alW = Service_Wunschliste.getWLPflanzen(benutzer.getBenutzerId());
 			olWunsch.clear();
 			for(MeineWunschliste einWunsch : alW) {

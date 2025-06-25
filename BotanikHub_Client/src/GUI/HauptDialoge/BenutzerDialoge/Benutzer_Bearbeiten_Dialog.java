@@ -13,8 +13,10 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class Benutzer_Bearbeiten_Dialog extends Dialog<ButtonType> {
@@ -26,7 +28,7 @@ public class Benutzer_Bearbeiten_Dialog extends Dialog<ButtonType> {
 		 * Hier kann er den Namen jedes Benutzer und die ID einsehen
 		 * Änderbar ist nur der Name des Benutzers
 		 */
-		
+
 		// Buttons & Co
 		ButtonType cancel = new ButtonType("Abbrechen", ButtonData.CANCEL_CLOSE);
 		ButtonType save = new ButtonType("Speichern", ButtonData.OK_DONE);
@@ -39,7 +41,7 @@ public class Benutzer_Bearbeiten_Dialog extends Dialog<ButtonType> {
 		TextField nameTxt = new TextField(b.getBenutzerName());
 		Label idLbl = new Label(String.valueOf(b.getAppBenutzer().getBenutzerId()));
 
-		// CSS
+		// CSS Styling
 		abbrechen.getStyleClass().add("benutzer-dialog-button-cancel");
 		speichern.getStyleClass().add("benutzer-dialog-button-ok");
 
@@ -60,6 +62,7 @@ public class Benutzer_Bearbeiten_Dialog extends Dialog<ButtonType> {
 			String neuerName = nameTxt.getText();
 			// Model setzen für den Insert
 			benutzer.setBenutzerName(neuerName);
+			
 			if(neuerName.isEmpty()) {
 				Util_Animations.pauseAnimation(nameTxt, Duration.seconds(3));
 				e.consume();
@@ -85,5 +88,8 @@ public class Benutzer_Bearbeiten_Dialog extends Dialog<ButtonType> {
 		this.getDialogPane().setContent(gesamt);
 		this.getDialogPane().getStylesheets().add(BotanikHub_Client.class.getResource("/style.css").toString());
 		this.getDialogPane().getStyleClass().add("benutzer-dialog-layout");
+		// Stage holen zum Icon setzen, da ich direkt im Dialog keins setzen kann
+		Stage arg1 = (Stage) this.getDialogPane().getScene().getWindow();
+		arg1.getIcons().add(new Image(BotanikHub_Client.class.getResource("/Window_Icon_Lebensbaum.jpg").toString()));
 	}
 }

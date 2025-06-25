@@ -15,17 +15,19 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
 
 public class Pflanzen_Notiz_Bearbeiten_Dialog extends Dialog<ButtonType> {
-	
+
 	public Pflanzen_Notiz_Bearbeiten_Dialog(PflanzeFX p, Benutzer benutzer) {
 
 		/*
 		 * Kleiner Dialog für Notizbearbeiten Button
 		 */
-		
+
 		// Buttons & Co
 		ButtonType cancel = new ButtonType("Abbrechen", ButtonData.CANCEL_CLOSE);
 		ButtonType save = new ButtonType("Speichern", ButtonData.OK_DONE);
@@ -62,5 +64,8 @@ public class Pflanzen_Notiz_Bearbeiten_Dialog extends Dialog<ButtonType> {
 		this.getDialogPane().setContent(gesamt);
 		this.getDialogPane().getStylesheets().add(BotanikHub_Client.class.getResource("/style.css").toString());
 		this.getDialogPane().getStyleClass().add("dialog-layout");
+		// Stage holen zum Icon setzen, da ich direkt im Dialog keins setzen kann
+		Stage arg1 = (Stage) this.getDialogPane().getScene().getWindow();
+		arg1.getIcons().add(new Image(BotanikHub_Client.class.getResource("/Window_Icon_Lebensbaum.jpg").toString()));
 	}
 }

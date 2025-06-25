@@ -19,17 +19,11 @@ public class Pflanze {
 	private Benutzer benutzer;
 	private String pflanzenName;
 	private String botanikName;
-	
+	private boolean isAdminPflanze;
 	// Verwendet ich für die lokale Anzeige des bildes(Client)
 	private String bildPfad;
-	// Base64-String dient ausschließlich dem Datentransfer zum Server
-	// Wird nicht in der Datenbank gespeichert, sondern nur verwendet
-	// um das Bild im Server-Dateisystem (z. B. /server_bilder/) abzulegen
-	// Deshalb keine Übergabe im Konstruktor nötig
+	// zur Speicherung des Pflanzenbildes (base64 decoder -> Methode in Pflanze Anlegen (Allgemein))
 	private String bildBase64;
-	// Für den Benutzer
-	private String userBase64;
-	
 	private int pflanzenID;
 	private boolean giftig;
 	private double wuchsbreite;
@@ -68,18 +62,17 @@ public class Pflanze {
 	}
 
 	// Datenbank Konstruktor
-	public Pflanze(String pflanzenName, String botanikName, String bildPfad, String bildBase64, String userBase64, int pflanzenID,
+	public Pflanze(String pflanzenName, String botanikName, String bildPfad, String bildBase64, int pflanzenID,
 			boolean giftig, double wuchsbreite, double wuchshoehe, Wasserbedarf wasserbedarf,
 			Lichtbedarf lichtbedarf, Intervall duengung, Vertraeglichkeit vertraeglichkeit, Standort standort,
 			Lebensdauer lebensdauer, ArrayList<Vermehrungsarten> vermehrung, ArrayList<Erinnerungen> erinnerung,
 			ArrayList<Botanikkalender> kalender, ArrayList<Month> monat, ArrayList<VerwendeteTeile> verwendeteTeile,
-			ArrayList<Pflanzentyp> pflanzenTyp, Benutzer benutzer, String notiz) {
+			ArrayList<Pflanzentyp> pflanzenTyp, Benutzer benutzer, String notiz, boolean isAdminPflanze) {
 		super();
 		this.pflanzenName = pflanzenName;
 		this.botanikName = botanikName;
 		this.bildPfad = bildPfad;
 		this.bildBase64 = bildBase64;
-		this.userBase64 = userBase64;
 		this.pflanzenID = pflanzenID;
 		this.giftig = giftig;
 		this.wuchsbreite = wuchsbreite;
@@ -98,6 +91,7 @@ public class Pflanze {
 		this.pflanzenTyp = pflanzenTyp;
 		this.benutzer = benutzer;
 		this.notiz = notiz;
+		this.isAdminPflanze = isAdminPflanze;
 	}
 
 	public Benutzer getBenutzer() {
@@ -275,14 +269,6 @@ public class Pflanze {
 	public void setBildBase64(String bildBase64) {
 		this.bildBase64 = bildBase64;
 	}
-	
-	public String getUserBase64() {
-		return userBase64;
-	}
-
-	public void setUserBase64(String userBase64) {
-		this.userBase64 = userBase64;
-	}
 
 	@Override
 	public String toString() {
@@ -293,5 +279,13 @@ public class Pflanze {
 				+ ", standort=" + standort + ", lebensdauer=" + lebensdauer + ", vermehrung=" + vermehrung
 				+ ", erinnerung=" + erinnerung + ", kalender=" + kalender + ", monat=" + monat + ", verwendeteTeile="
 				+ verwendeteTeile + ", pflanzenTyp=" + pflanzenTyp + "]";
+	}
+
+	public boolean isAdminPflanze() {
+		return isAdminPflanze;
+	}
+
+	public void setAdminPflanze(boolean isAdminPflanze) {
+		this.isAdminPflanze = isAdminPflanze;
 	}
 }

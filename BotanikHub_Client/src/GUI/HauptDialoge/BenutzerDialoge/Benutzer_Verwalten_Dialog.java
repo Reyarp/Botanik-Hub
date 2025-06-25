@@ -21,6 +21,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class Benutzer_Verwalten_Dialog extends Dialog<ButtonType> {
@@ -41,12 +42,13 @@ public class Benutzer_Verwalten_Dialog extends Dialog<ButtonType> {
 		Button abbrechen = new Button("Abbrechen");
 		abbrechen.setPrefWidth(80);
 
-		ImageView headerBild = new ImageView(new Image(BotanikHub_Client.class.getResource("/benutzerheader.jpg").toString()));
+		ImageView headerBild = new ImageView(new Image(BotanikHub_Client.class.getResource("/Benutzer_Verwalten_Headerbild.jpg").toString()));
 		headerBild.setSmooth(true);
 		headerBild.setCache(true);
 		headerBild.setFitHeight(80);
 		headerBild.setFitWidth(632);
 
+		// CSS Styling
 		benutzerBearbeiten.getStyleClass().add("benutzer-dialog-button-ok");
 		abbrechen.getStyleClass().add("benutzer-dialog-button-cancel");
 
@@ -70,7 +72,7 @@ public class Benutzer_Verwalten_Dialog extends Dialog<ButtonType> {
 		tvBenutzer.getColumns().addAll(idCol, nameCol, regCol);
 		tvBenutzer.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		tvBenutzer.getStyleClass().add("benutzer-table-view");
-		// Eigene CSS TableView
+		// Eigene CSS TableView -> TableRowCell muss extra formatiert werden
 		tvBenutzer.setRowFactory(tv -> {
 			TableRow<BenutzerFX> row = new TableRow<>();
 			row.getStyleClass().add("benutzer-table-row-cell");
@@ -83,8 +85,8 @@ public class Benutzer_Verwalten_Dialog extends Dialog<ButtonType> {
 		// Changeistener: tvBenutzer
 		tvBenutzer.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<>() {
 			@Override
-			public void changed(ObservableValue<? extends BenutzerFX> arg0, BenutzerFX alt, BenutzerFX neu) {
-				benutzerBearbeiten.setDisable(neu == null);
+			public void changed(ObservableValue<? extends BenutzerFX> arg0, BenutzerFX arg1, BenutzerFX arg2) {
+				benutzerBearbeiten.setDisable(arg2 == null);
 			}
 		});
 
@@ -115,6 +117,9 @@ public class Benutzer_Verwalten_Dialog extends Dialog<ButtonType> {
 		this.getDialogPane().getStyleClass().add("benutzer-dialog-layout");
 		this.getDialogPane().setPrefHeight(450);
 		this.getDialogPane().setPrefWidth(550);
+		// Stage holen zum Icon setzen, da ich direkt im Dialog keins setzen kann
+		Stage arg1 = (Stage) this.getDialogPane().getScene().getWindow();
+		arg1.getIcons().add(new Image(BotanikHub_Client.class.getResource("/Window_Icon_Lebensbaum.jpg").toString()));
 
 	}
 	private void readAlleBenutzer() {

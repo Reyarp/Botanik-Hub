@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import Client.BotanikHub_Client;
 import GUI.HauptDialoge.PflanzenDialoge.SubDialoge.ErinnerungsTyp_Dialog;
-import GUI.HauptDialoge.PflanzenDialoge.SubDialoge.Pflanze_Intervall_Dialog;
+import GUI.HauptDialoge.PflanzenDialoge.SubDialoge.Intervall_Dialog;
 import GUI.Utilitys.Util_Animations;
 import GUI.Utilitys.Util_Help;
 import Modell.Benutzer;
@@ -36,9 +36,11 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
@@ -51,6 +53,11 @@ public class Erinnerung_Anlegen_Dialog extends Dialog<ButtonType> {
 	@SuppressWarnings("unchecked")
 	public Erinnerung_Anlegen_Dialog(Benutzer benutzer) {
 
+		/*
+		 * Dieser Dialog ist für den Benutzer gedacht
+		 * Hier kann er Erinnerungen zu Pflanzen anlegen 
+		 */
+		
 		// Buttons & Co
 		ButtonType cancel = new ButtonType("Abbrechen", ButtonData.CANCEL_CLOSE);
 		ButtonType save = new ButtonType("Speichern", ButtonData.OK_DONE);
@@ -119,6 +126,8 @@ public class Erinnerung_Anlegen_Dialog extends Dialog<ButtonType> {
 		// Layout verpacken für TitledPane
 		HBox pflanzeBox = new HBox(tvPflanze);
 		HBox erinnerungBox = new HBox(grid);
+		
+		// CSS Styling
 		pflanzeBox.getStyleClass().add("dialog-layout");
 		erinnerungBox.getStyleClass().add("dialog-layout");
 
@@ -129,16 +138,17 @@ public class Erinnerung_Anlegen_Dialog extends Dialog<ButtonType> {
 		tpErinnerung.setExpanded(true);
 
 		// readMethode -> unten
-		readPflanzen();
+		readPflanzen(benutzer);
 
 		// Changelistener: tvPflanze
 		tvPflanze.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<>() {
 			@Override
-			public void changed(ObservableValue<? extends PflanzeFX> obs, PflanzeFX alt, PflanzeFX neu) {
-				if (neu != null) {
+			public void changed(ObservableValue<? extends PflanzeFX> arg0, PflanzeFX arg1, PflanzeFX arg2) {
+				if (arg2 != null) {
 					tpErinnerung.setDisable(false);
 					speichern.setDisable(false);
-					erinnerung.getAppErinnerung().setPflanze(neu.getAppPflanze());
+					// Pflanze für die aktuelle Erinnerung setzen
+					erinnerung.getAppErinnerung().setPflanze(arg2.getAppPflanze());
 				} else {
 					tpErinnerung.setDisable(true);
 					speichern.setDisable(true);
@@ -158,7 +168,7 @@ public class Erinnerung_Anlegen_Dialog extends Dialog<ButtonType> {
 		});
 
 		intervall.setOnAction(e -> {
-			Pflanze_Intervall_Dialog dialog = new Pflanze_Intervall_Dialog(erinnerung);
+			Intervall_Dialog dialog = new Intervall_Dialog(erinnerung);
 			Optional<ButtonType> result = dialog.showAndWait();
 			result.ifPresent(r -> {
 				if (r.getButtonData() == ButtonData.OK_DONE && erinnerung.getAppErinnerung().getIntervall() != null) {
@@ -167,13 +177,19 @@ public class Erinnerung_Anlegen_Dialog extends Dialog<ButtonType> {
 			});
 		});
 
+		/* Da ich keine ButtonTypes hier verwendet habe musste ich eine andere Lösung zum schliessen finden
+		 * über this.setResult kann ich dem Fenster sagen -> ButtonType.Cancel = Schliesse das fenster
+		 */
 		abbrechen.setOnAction(e -> this.setResult(ButtonType.CANCEL));
+		// Dieser befehl ist ähnlich wie oben nur für das 'x' beim Fenster
 		this.getDialogPane().getScene().getWindow().addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> {
 			this.setResult(ButtonType.CANCEL);
 		});
 
+		// Eventhandler: speichern
 		speichern.setOnAction(e -> {
 			if (date != null) {
+				// Erinnerungs inhalte setzen
 				erinnerung.setPflanze(tvPflanze.getSelectionModel().getSelectedItem().getAppPflanze());
 				erinnerung.setBenutzer(benutzer);
 				erinnerung.setDatum(date.getValue());
@@ -215,11 +231,15 @@ public class Erinnerung_Anlegen_Dialog extends Dialog<ButtonType> {
 		this.getDialogPane().setContent(vb);
 		this.getDialogPane().getStylesheets().add(BotanikHub_Client.class.getResource("/style.css").toString());
 		this.getDialogPane().getStyleClass().add("kalender-dialog-layout");
+		// Stage holen zum Icon setzen, da ich direkt im Dialog keins setzen kann
+		Stage arg1 = (Stage) this.getDialogPane().getScene().getWindow();
+		arg1.getIcons().add(new Image(BotanikHub_Client.class.getResource("/Window_Icon_Lebensbaum.jpg").toString()));
 	}
 
-	private void readPflanzen() {
+	private void readPflanzen(Benutzer benutzer) {
 		try {
-			Benutzer benutzer = BotanikHub_Client.getBenutzer();
+			// Read methode für Pflanzen
+			// 
 			ArrayList<Pflanze> alPflanze = Service_BotanikHub.getBHPflanzen(benutzer.getBenutzerId());
 			olPflanze.clear();
 			for(Pflanze einePflanze : alPflanze) {

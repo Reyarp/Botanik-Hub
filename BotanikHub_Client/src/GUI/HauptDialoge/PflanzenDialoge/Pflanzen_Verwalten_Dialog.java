@@ -35,6 +35,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
@@ -45,7 +46,7 @@ public class Pflanzen_Verwalten_Dialog extends Dialog<ButtonType> {
 
 	@SuppressWarnings("unchecked")
 	public Pflanzen_Verwalten_Dialog(Benutzer benutzer) {
-		
+
 		/*
 		 * Dieser Dialog verwaltet alle Pflanzen
 		 * Hier kann man neue anlegen, bearbeite, löschen oder ansehen
@@ -66,12 +67,12 @@ public class Pflanzen_Verwalten_Dialog extends Dialog<ButtonType> {
 		abbrechen.setPrefWidth(80);
 
 		// Icons
-		ImageView wunschlisteIcon = new ImageView(new Image(BotanikHub_Client.class.getResource("/wishlist.png").toString()));
-		ImageView entdecken = new ImageView(new Image(BotanikHub_Client.class.getResource("/suchen.png").toString()));
-		ImageView notiz = new ImageView(new Image(BotanikHub_Client.class.getResource("/notiz.png").toString()));
+		ImageView wunschlisteIcon = new ImageView(new Image(BotanikHub_Client.class.getResource("/Pflanzen_Verwalten_Wunschliste_Button.png").toString()));
+		ImageView entdecken = new ImageView(new Image(BotanikHub_Client.class.getResource("/Pflanzen_Verwalten_Suchen_Button.png").toString()));
+		ImageView notiz = new ImageView(new Image(BotanikHub_Client.class.getResource("/Pflanzen_Verwalten_Notiz_Button.png.png").toString()));
 		ImageView headerBild = new ImageView(benutzer.getTyp() == BenutzerTyp.ADMIN
-				? new Image(BotanikHub_Client.class.getResource("/global.jpeg").toString())
-						: new Image(BotanikHub_Client.class.getResource("/botanikhub.jpg").toString()));
+				? new Image(BotanikHub_Client.class.getResource("/Pflanzen_Verwalten_Admin_Headerbild.jpeg").toString())
+						: new Image(BotanikHub_Client.class.getResource("/Pflanzen_Verwalten_Benutzer_Headerbild.jpg").toString()));
 
 		// Icon einstellungen
 		wunschlisteIcon.setFitHeight(28);
@@ -116,7 +117,8 @@ public class Pflanzen_Verwalten_Dialog extends Dialog<ButtonType> {
 		typCol.setPrefWidth(200);
 		typCol.setStyle("-fx-alignment:center");
 
-		TableColumn<PflanzeFX, String> benCol = new TableColumn<>(benutzer.getTyp() == BenutzerTyp.ADMIN ? "Erstellt von" : "Benutzer");
+		// Je nach nutzer steht das Erstellt von oder Besitzer
+		TableColumn<PflanzeFX, String> benCol = new TableColumn<>(benutzer.getTyp() == BenutzerTyp.ADMIN ? "Erstellt von" : "Besitzer");
 		benCol.setCellValueFactory(new PropertyValueFactory<>("benutzerName"));
 		benCol.setPrefWidth(200);
 		benCol.setStyle("-fx-alignment:center");
@@ -226,37 +228,36 @@ public class Pflanzen_Verwalten_Dialog extends Dialog<ButtonType> {
 					notiz.setOpacity(0.4);
 					return;
 				}
-				
 				// Admin Booleans
-				boolean adminPflanze = arg2.getAppPflanze().getBenutzer().getBenutzerId() == 1;
-				boolean adminLogin = benutzer.getTyp() == BenutzerTyp.ADMIN;
-				boolean adminDarfBearbeiten = adminPflanze && adminLogin;
-				
+				boolean adminPflanze = arg2.getAppPflanze().isAdminPflanze();					// adminPflanze -> wenn er sie erstellt hat
+				boolean adminLogin = benutzer.getTyp() == BenutzerTyp.ADMIN;					// Adminlogin -> eingeloggter admin
+				boolean eigenePflanze = arg2.getAppPflanze().getBenutzer().equals(benutzer);	// selbst erstellte Pflanze
+				boolean adminDarfBearbeiten = adminLogin && eigenePflanze;						// darf nur bearbeiten -> eigene pflanze und adminlogin
+
 				// Pflanze des aktuellen Benutzers
-				boolean userLogin = !adminLogin;
-				boolean userPflanze = arg2.getAppPflanze().getBenutzer().equals(benutzer);
-				boolean userDarfBearbeiten = userLogin && userPflanze;
-				boolean userNotizBearbeiten = userLogin && userPflanze;
-				
+				boolean userLogin = !adminLogin;												// nicht admin
+				boolean userDarfBearbeiten = userLogin && eigenePflanze && !adminPflanze;		// wenn userlogin && selbst erstellt && keine admin pflanze
+
 				// Buttons aktivieren
 				pflanzeAnsehen.setDisable(false);
 				pflanzeLoeschen.setDisable(false);
-				
+
+				// Bei Adminlogin
 				if(adminLogin) {
-					pflanzeBearbeiten.setDisable(!adminDarfBearbeiten);
-					notiz.setDisable(true);
+					pflanzeBearbeiten.setDisable(!adminDarfBearbeiten);							// darf nur bearbeiten -> eigene pflanze und adminlogin
+					notiz.setDisable(true);														// Keine notiz bei admin
 					notiz.setOpacity(0.4);
 				}
+				// Bei Benutzerlogin
 				if(userLogin) {
-					pflanzeBearbeiten.setDisable(!userDarfBearbeiten);
-					
-					notiz.setDisable(!userNotizBearbeiten);
-					notiz.setOpacity(userNotizBearbeiten ? 1:0.4);
+					pflanzeBearbeiten.setDisable(!userDarfBearbeiten);							// wenn userlogin && selbst erstellt && keine admin pflanze
+					notiz.setDisable(!userLogin);												// nicht admin
+					notiz.setOpacity(userLogin ? 1:0.4);
 				}
-				
+
 			}
 		});
-		
+
 
 		// Layout: AnchorPane
 		AnchorPane buttonPane = new AnchorPane(neuePflanze, pflanzeBearbeiten, pflanzeLoeschen, pflanzeAnsehen, wunschlisteIcon, entdecken, abbrechen, notiz);
@@ -280,10 +281,14 @@ public class Pflanzen_Verwalten_Dialog extends Dialog<ButtonType> {
 		this.getDialogPane().getStyleClass().add("dialog-layout");
 		this.getDialogPane().setPrefHeight(450);
 		this.getDialogPane().setPrefWidth(750);
+		// Stage holen zum Icon setzen, da ich direkt im Dialog keins setzen kann
+		Stage arg1 = (Stage) this.getDialogPane().getScene().getWindow();
+		arg1.getIcons().add(new Image(BotanikHub_Client.class.getResource("/Window_Icon_Lebensbaum.jpg").toString()));
 	}
 
 	private void readPflanzen(Benutzer benutzer) {
 		try {
+			// Readmethode für Pflanzen
 			ArrayList<Pflanze> alPflanze = new ArrayList<>();
 			if(benutzer.getTyp() == BenutzerTyp.ADMIN) {
 				alPflanze = Service_Pflanze.getPflanze();
