@@ -61,7 +61,6 @@ public class Benutzer_Erstellen_Dialog extends Dialog<ButtonType> {
 
 		// Settings
 		speichern.setDisable(true);
-		// Unsichtbar machen
 		pwRepTxt.setPromptText("Passwort eingeben");
 		nameTxt.setPromptText("Benutzername eingeben");
 
