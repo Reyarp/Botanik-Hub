@@ -38,13 +38,13 @@ Ob Zimmerpflanze oder Gartenliebling – mit dieser App hast du alle Information
 
 ## 🛠️ Verwendete Technologien
 
-| Komponente     | Beschreibung                        |
-|----------------|-------------------------------------|
-| Java           | Hauptprogrammiersprache             |
-| JavaFX         | GUI-Framework                       |
-| SQLite         | Lokale Datenbank (per JDBC)         |
-| JAX-RS (Jersey)| REST-Schnittstelle (Server/Client)  |
-| JSON/JAXB      | Datentransfer & Serialisierung      |
+| Komponente      | Beschreibung                        |
+|-----------------|-------------------------------------|
+| Java            | Hauptprogrammiersprache             |
+| JavaFX          | GUI-Framework                       |
+| Apache Derby    | Lokale Datenbank (per JDBC)         |
+| JAX-RS (Jersey) | REST-Schnittstelle (Server/Client)  |
+| JSON/JAXB       | Datentransfer & Serialisierung      |
 
 ---
 ## 🔐 Beispiel für Login
