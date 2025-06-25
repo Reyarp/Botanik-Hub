@@ -10,7 +10,7 @@
 ## 🌱 Projektübersicht
 
 **Botanik Hub** ist eine Java-basierte Desktop-Anwendung zur Verwaltung und Pflege deiner Pflanzen.  
-Ob Zimmerpflanze oder Gartenliebling – mit dieser App hast du alle Informationen, Erinnerungen und Kalenderdaten an einem Ort.
+Ob Zimmerpflanze oder Gartenliebling – mit dieser Anwendung hast du alle Informationen, Erinnerungen und Kalenderdaten an einem Ort.
 
 ---
 
