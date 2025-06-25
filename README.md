@@ -31,7 +31,7 @@ Ob Zimmerpflanze oder Gartenliebling – mit dieser App hast du alle Information
 - 👤 **Benutzerverwaltung mit Admin-Modus**  
   Admin kann Pflanzen global verwalten – Benutzer haben persönliche Bereiche
 
-- 🤖 **Chatbot „Alisa“** *(optional)*  
+- 🤖 **Chatbot „Alisa“** 
   Intelligente Pflanzenhilfe über Dialog
 
 ---
@@ -44,7 +44,7 @@ Ob Zimmerpflanze oder Gartenliebling – mit dieser App hast du alle Information
 | JavaFX          | GUI-Framework                       |
 | Apache Derby    | Lokale Datenbank (per JDBC)         |
 | JAX-RS (Jersey) | REST-Schnittstelle (Server/Client)  |
-| JSON/JAXB       | Datentransfer & Serialisierung      |
+| JSON/Jackson    | Datentransfer & Serialisierung      |
 
 ---
 ## 🔐 Beispiel für Login
