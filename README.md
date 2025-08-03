@@ -58,10 +58,11 @@ Ob Zimmerpflanze oder Gartenliebling – mit dieser App hast du alle Information
 ## 📸 Screenshots
 
 ### Startbildschirm
-![Startseite](Login_Startseute.png)
+### Startseite
+![Startseite](screenshots/Login_Startseite.png)
 
 ### Benutzerstartseite
-![Benutzerseite](Benutzer_Startseite.png)
+![Benutzerseite](screenshots/Benutzer_Startseite.png)
 
 ### Adminstartseite
-![Adminstartseite](Admin_Startseite.png)
+![Adminstartseite](screenshots/Admin_Startseite.png)
